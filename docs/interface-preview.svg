@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="860" viewBox="0 0 1440 860" role="img" aria-labelledby="title desc">
+  <title id="title">NodeSafari interface preview</title>
+  <desc id="desc">Dark scientific dashboard with data controls, network metrics, analysis tabs, a gene interaction network, and a ranked node table.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#06101c"/><stop offset=".58" stop-color="#0b1b2a"/><stop offset="1" stop-color="#102d3d"/></linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="10" stdDeviation="20" flood-color="#000" flood-opacity=".28"/></filter>
+  </defs>
+  <rect width="1440" height="860" rx="24" fill="url(#bg)"/>
+  <rect x="0" y="0" width="292" height="860" rx="24" fill="#071522"/>
+  <path d="M292 0v860" stroke="#1e4051"/>
+  <circle cx="42" cy="49" r="17" fill="#18b6a4"/><path d="M34 52c8-20 16 19 24-3M35 43c8 19 15-19 23 1" fill="none" stroke="#eafffb" stroke-width="2.5" stroke-linecap="round"/>
+  <text x="70" y="56" font-family="Inter,Arial,sans-serif" font-size="21" font-weight="700" fill="#edf6f8">NodeSafari</text>
+  <text x="30" y="112" font-family="Inter,Arial,sans-serif" font-size="17" font-weight="700" fill="#dcebee">Data workspace</text>
+  <text x="30" y="141" font-family="Inter,Arial,sans-serif" font-size="13" fill="#8fa6b7">Upload an edge list or use the demo.</text>
+  <text x="30" y="184" font-family="Inter,Arial,sans-serif" font-size="13" font-weight="600" fill="#afc1cf">PRIMARY NETWORK</text>
+  <rect x="30" y="199" width="232" height="68" rx="10" fill="#0d1c2c" stroke="#28495b" stroke-dasharray="5 4"/>
+  <path d="M139 220v22m-8-13 8-9 8 9" fill="none" stroke="#55d7c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="93" y="256" font-family="Inter,Arial,sans-serif" font-size="12" fill="#9eb2c1">Drop CSV or browse</text>
+  <text x="30" y="310" font-family="Inter,Arial,sans-serif" font-size="13" font-weight="600" fill="#afc1cf">COMPARISON NETWORK</text>
+  <rect x="30" y="325" width="232" height="68" rx="10" fill="#0d1c2c" stroke="#28495b"/>
+  <circle cx="52" cy="359" r="6" fill="#18b6a4"/><text x="69" y="364" font-family="Inter,Arial,sans-serif" font-size="13" fill="#dcebee">Disease example loaded</text>
+  <text x="30" y="442" font-family="Inter,Arial,sans-serif" font-size="13" fill="#afc1cf">Rich-club null networks</text>
+  <line x1="30" y1="469" x2="262" y2="469" stroke="#28495b" stroke-width="5" stroke-linecap="round"/><line x1="30" y1="469" x2="111" y2="469" stroke="#18b6a4" stroke-width="5" stroke-linecap="round"/><circle cx="111" cy="469" r="9" fill="#eafffb" stroke="#18b6a4" stroke-width="3"/><text x="231" y="454" font-family="Inter,Arial,sans-serif" font-size="12" fill="#8fa6b7">20</text>
+  <rect x="30" y="527" width="232" height="106" rx="12" fill="#0d1c2c"/>
+  <text x="47" y="552" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="700" fill="#9eb2c1">EXPECTED FORMAT</text>
+  <text x="47" y="581" font-family="ui-monospace,monospace" font-size="12" fill="#55d7c7">source,target,weight</text>
+  <text x="47" y="606" font-family="ui-monospace,monospace" font-size="12" fill="#dcebee">TP53,MDM2,2.8</text>
+  <text x="326" y="51" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="700" letter-spacing="2.2" fill="#55d7c7">BIOLOGICAL NETWORK DISCOVERY</text>
+  <text x="326" y="92" font-family="Inter,Arial,sans-serif" font-size="34" font-weight="750" fill="#edf6f8">NodeSafari</text>
+  <text x="326" y="121" font-family="Inter,Arial,sans-serif" font-size="15" fill="#afc1cf">Discover modules, compare conditions, simulate perturbations, and learn graph representations.</text>
+  <g filter="url(#shadow)" font-family="Inter,Arial,sans-serif">
+    <g transform="translate(326 154)"><rect width="194" height="82" rx="14" fill="#0d1c2c" stroke="#214255"/><text x="18" y="29" font-size="13" fill="#9eb2c1">Nodes</text><text x="18" y="61" font-size="27" font-weight="700" fill="#edf6f8">22</text></g>
+    <g transform="translate(536 154)"><rect width="194" height="82" rx="14" fill="#0d1c2c" stroke="#214255"/><text x="18" y="29" font-size="13" fill="#9eb2c1">Interactions</text><text x="18" y="61" font-size="27" font-weight="700" fill="#edf6f8">32</text></g>
+    <g transform="translate(746 154)"><rect width="194" height="82" rx="14" fill="#0d1c2c" stroke="#214255"/><text x="18" y="29" font-size="13" fill="#9eb2c1">Modules</text><text x="18" y="61" font-size="27" font-weight="700" fill="#edf6f8">4</text></g>
+    <g transform="translate(956 154)"><rect width="194" height="82" rx="14" fill="#0d1c2c" stroke="#214255"/><text x="18" y="29" font-size="13" fill="#9eb2c1">Density</text><text x="18" y="61" font-size="27" font-weight="700" fill="#edf6f8">0.139</text></g>
+    <g transform="translate(1166 154)"><rect width="194" height="82" rx="14" fill="#0d1c2c" stroke="#214255"/><text x="18" y="29" font-size="13" fill="#9eb2c1">Connected</text><text x="18" y="61" font-size="27" font-weight="700" fill="#edf6f8">100%</text></g>
+  </g>
+  <g font-family="Inter,Arial,sans-serif" font-size="14"><rect x="326" y="261" width="88" height="38" rx="9" fill="#15384a"/><text x="346" y="285" fill="#75e5d6">Explore</text><text x="440" y="285" fill="#afc1cf">Rich club</text><text x="530" y="285" fill="#afc1cf">Compare</text><text x="612" y="285" fill="#afc1cf">Perturb</text><text x="691" y="285" fill="#afc1cf">ML lab</text></g>
+  <rect x="326" y="322" width="657" height="490" rx="16" fill="#091827" stroke="#18384a"/>
+  <text x="351" y="356" font-family="Inter,Arial,sans-serif" font-size="17" font-weight="700" fill="#dcebee">Interaction network</text>
+  <g stroke="#5c7488" stroke-opacity=".55" stroke-width="2">
+    <path d="M479 452L590 400 684 466 612 563 484 564ZM590 400L776 412 830 512 684 466M612 563L747 650 830 512M484 564L415 659 555 726 747 650M776 412L887 448M830 512L900 594M747 650L847 706M415 659L368 553M479 452L387 426M684 466L720 369M612 563L548 486M590 400L548 486M548 486L484 564"/>
+  </g>
+  <g stroke="#d8f5f0" stroke-width="2">
+    <g fill="#18b6a4"><circle cx="479" cy="452" r="18"/><circle cx="590" cy="400" r="23"/><circle cx="684" cy="466" r="25"/><circle cx="612" cy="563" r="27"/><circle cx="484" cy="564" r="20"/></g>
+    <g fill="#6c63ff"><circle cx="776" cy="412" r="19"/><circle cx="830" cy="512" r="27"/><circle cx="747" cy="650" r="22"/><circle cx="887" cy="448" r="15"/><circle cx="900" cy="594" r="17"/><circle cx="847" cy="706" r="15"/></g>
+    <g fill="#f59e5b"><circle cx="415" cy="659" r="19"/><circle cx="555" cy="726" r="16"/><circle cx="368" cy="553" r="14"/><circle cx="387" cy="426" r="15"/></g>
+    <g fill="#ee6c91"><circle cx="548" cy="486" r="16"/><circle cx="720" cy="369" r="14"/></g>
+  </g>
+  <g font-family="Inter,Arial,sans-serif" font-size="10" text-anchor="middle" fill="#edf6f8"><text x="479" y="456">TP53</text><text x="590" y="404">ATM</text><text x="684" y="470">BRCA1</text><text x="612" y="567">CDKN1A</text><text x="830" y="516">STAT3</text><text x="747" y="654">AKT1</text></g>
+  <rect x="1005" y="322" width="355" height="490" rx="16" fill="#0d1c2c" stroke="#18384a"/>
+  <text x="1031" y="358" font-family="Inter,Arial,sans-serif" font-size="17" font-weight="700" fill="#dcebee">High-interest nodes</text>
+  <g font-family="Inter,Arial,sans-serif" font-size="12"><text x="1031" y="397" fill="#8fa6b7">NODE</text><text x="1160" y="397" fill="#8fa6b7">DEGREE</text><text x="1253" y="397" fill="#8fa6b7">PAGERANK</text></g>
+  <g stroke="#203b4d"><path d="M1030 413h304M1030 460h304M1030 507h304M1030 554h304M1030 601h304"/></g>
+  <g font-family="Inter,Arial,sans-serif" font-size="14" fill="#dcebee"><text x="1031" y="443">STAT3</text><text x="1174" y="443">6</text><text x="1267" y="443">0.071</text><text x="1031" y="490">TP53</text><text x="1174" y="490">5</text><text x="1267" y="490">0.066</text><text x="1031" y="537">AKT1</text><text x="1174" y="537">5</text><text x="1267" y="537">0.065</text><text x="1031" y="584">BRCA1</text><text x="1174" y="584">4</text><text x="1267" y="584">0.056</text></g>
+  <rect x="1030" y="639" width="305" height="104" rx="10" fill="#102334"/><rect x="1030" y="639" width="3" height="104" fill="#18b6a4"/><text x="1050" y="668" font-family="Inter,Arial,sans-serif" font-size="13" font-weight="700" fill="#edf6f8">STAT3 is the leading hub.</text><text x="1050" y="694" font-family="Inter,Arial,sans-serif" font-size="12" fill="#afc1cf">Treat this as a structural candidate</text><text x="1050" y="713" font-family="Inter,Arial,sans-serif" font-size="12" fill="#afc1cf">for follow-up, not causal evidence.</text>
+</svg>

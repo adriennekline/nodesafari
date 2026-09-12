@@ -1,0 +1,21 @@
+name: Bug report
+description: Report an incorrect result or application problem
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Describe the analysis and the result you expected.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Minimal reproducible example
+      description: Include a small de-identified edge list if possible.
+  - type: input
+    id: version
+    attributes:
+      label: BioGraph Explorer version

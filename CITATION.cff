@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+title: NodeSafari
+message: If you use this software, please cite it using the metadata below.
+type: software
+authors:
+  - family-names: Kline
+    given-names: Adrienne
+version: 0.1.0
+date-released: 2026-09-12
+license: MIT
+repository-code: https://github.com/adriennekline/nodesafari
+keywords:
+  - biological networks
+  - network science
+  - graph machine learning
