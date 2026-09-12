@@ -50,6 +50,8 @@ streamlit run app.py
 
 The application opens with two synthetic example networks, so every workflow can be explored before uploading data.
 
+New to Docker or Python? Follow the [complete beginner's guide](docs/GETTING_STARTED.md). It explains both routes step by step, including why Docker does not create or require a `.venv`.
+
 ## Input format
 
 Upload a CSV edge list with `source` and `target` columns. `weight` is optional.
@@ -101,4 +103,4 @@ Method requests and contributions are welcome. Start with [CONTRIBUTING.md](CONT
 
 ## Attribution
 
-Created by **Adrienne Kline** with **Northwestern University**. Licensed under the [MIT License](LICENSE). Citation metadata are provided in [CITATION.cff](CITATION.cff).
+Created by **Adrienne Kline** with **Northwestern University**. Licensed under the [MIT License](LICENSE). Citation metadata are provided in [CITATION.cff](CITATION.cff), with a ready-to-copy [BibTeX entry](CITATION.bib).
