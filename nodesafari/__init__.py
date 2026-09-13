@@ -56,4 +56,4 @@ __all__ = [
     "top_link_predictions",
 ]
 
-__version__ = "1.1.0"
+__version__ = "1.1.1"

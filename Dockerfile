@@ -19,6 +19,7 @@ COPY nodesafari ./nodesafari
 RUN python -m pip install --upgrade pip && python -m pip install .
 
 COPY app.py ./
+COPY .streamlit ./.streamlit
 COPY examples ./examples
 
 USER nodesafari

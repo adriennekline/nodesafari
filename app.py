@@ -47,20 +47,35 @@ st.set_page_config(page_title="NodeSafari", page_icon="🧭", layout="wide")
 st.markdown(
     """
     <style>
-    :root { --ink:#07121f; --panel:#0d1c2c; --teal:#18b6a4; --muted:#92a7ba; }
-    .stApp { background:linear-gradient(145deg,#06101c 0%,#0b1b2a 55%,#102636 100%); color:#edf6f8; }
-    [data-testid="stSidebar"] { background:#071522; border-right:1px solid #1e4051; }
+    :root { --ink:#201a3b; --panel:#ffffff; --purple:#7c3aed; --teal:#0f9f91; --muted:#68637d; }
+    .stApp {
+      background:
+        radial-gradient(circle at 85% 2%,rgba(45,212,191,.08),transparent 28%),
+        radial-gradient(circle at 18% 3%,rgba(139,92,246,.07),transparent 30%),
+        #ffffff;
+      color:#201a3b;
+    }
+    [data-testid="stSidebar"] { background:#faf9ff; border-right:1px solid #e5def5; }
     h1,h2,h3 { letter-spacing:-0.025em; }
     h1 { font-size:2.15rem !important; margin-bottom:.1rem !important; }
-    .eyebrow { color:#55d7c7; font-size:.78rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase; }
-    .lede { color:#afc1cf; font-size:1rem; max-width:830px; margin-bottom:1rem; }
-    [data-testid="stMetric"] { background:rgba(13,28,44,.82); border:1px solid #214255; padding:.8rem 1rem; border-radius:14px; }
-    [data-testid="stMetricLabel"] { color:#9eb2c1; }
-    .insight { border-left:3px solid #18b6a4; background:rgba(13,28,44,.82); padding:.8rem 1rem; border-radius:0 12px 12px 0; color:#dcebee; }
-    .method-note { color:#8fa6b7; font-size:.84rem; }
+    .eyebrow { color:#0f9f91; font-size:.78rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase; }
+    .lede { color:#625d76; font-size:1rem; max-width:830px; margin-bottom:1rem; }
+    [data-testid="stMetric"] {
+      background:linear-gradient(145deg,#ffffff,#fbfaff);
+      border:1px solid #e2dcf2;
+      box-shadow:0 8px 24px rgba(55,35,100,.07),inset 0 3px 0 rgba(45,212,191,.65);
+      padding:.8rem 1rem;
+      border-radius:14px;
+    }
+    [data-testid="stMetricLabel"] { color:#68637d; }
+    .insight { border-left:3px solid #14b8a6; background:linear-gradient(90deg,#ecfdf9,#f5f3ff); padding:.8rem 1rem; border-radius:0 12px 12px 0; color:#30294e; }
+    .method-note { color:#716b84; font-size:.84rem; }
     .stTabs [data-baseweb="tab-list"] { gap:.35rem; }
-    .stTabs [data-baseweb="tab"] { background:#0d1c2c; border-radius:10px; padding:.45rem .8rem; }
-    .stTabs [aria-selected="true"] { background:#15384a; color:#75e5d6; }
+    .stTabs [data-baseweb="tab"] { background:#f7f5fc; border:1px solid transparent; border-radius:10px; padding:.45rem .8rem; }
+    .stTabs [aria-selected="true"] { background:linear-gradient(135deg,#ede9fe,#e6fffb); border-color:#c4b5fd; color:#5b21b6; }
+    .stButton button,.stDownloadButton button { background:#ffffff; border-color:#8b5cf6; color:#6d28d9; }
+    .stButton button:hover,.stDownloadButton button:hover { background:#f0fdfa; border-color:#0f9f91; color:#0f766e; }
+    [data-testid="stFileUploaderDropzone"] { background:#fdfcff; border-color:#cfc5e8; }
     </style>
     """,
     unsafe_allow_html=True,
@@ -80,9 +95,9 @@ def csv_bytes(frame: pd.DataFrame) -> bytes:
 def styled(chart: alt.Chart) -> alt.Chart:
     return (
         chart.configure_axis(
-            gridColor="#284456", labelColor="#BDD0DB", titleColor="#E5F0F3"
+            gridColor="#e8e3f2", labelColor="#625d76", titleColor="#30294e"
         )
-        .configure_legend(labelColor="#BDD0DB", titleColor="#E5F0F3")
+        .configure_legend(labelColor="#625d76", titleColor="#30294e")
         .configure_view(strokeOpacity=0)
     )
 
@@ -194,7 +209,7 @@ with explore_tab:
         else:
             chart = (
                 alt.Chart(chart_frame)
-                .mark_line(point=True, color="#18B6A4", strokeWidth=3)
+                .mark_line(point=True, color="#2DD4BF", strokeWidth=3)
                 .encode(
                     x=alt.X("degree_threshold:Q", title="Degree threshold (k)"),
                     y=alt.Y("normalized_phi:Q", title="Normalized rich-club coefficient"),
@@ -203,7 +218,7 @@ with explore_tab:
                 .properties(height=360)
             )
             rule = alt.Chart(pd.DataFrame({"y": [1.0]})).mark_rule(
-                color="#F59E5B", strokeDash=[5, 5]
+                color="#A78BFA", strokeDash=[5, 5]
             ).encode(y="y:Q")
             st.altair_chart(styled(chart + rule), width="stretch")
             peak = chart_frame.loc[chart_frame["normalized_phi"].idxmax()]
@@ -228,7 +243,7 @@ with explore_tab:
         with left:
             community_chart = (
                 alt.Chart(community_sizes)
-                .mark_bar(color="#18B6A4", cornerRadiusEnd=4)
+                .mark_bar(color="#2DD4BF", cornerRadiusEnd=4)
                 .encode(
                     x=alt.X("nodes:Q", title="Nodes"),
                     y=alt.Y("community:N", sort="-x", title="Community"),
@@ -300,7 +315,7 @@ with compare_tab:
                 .encode(
                     x=alt.X("degree_change:Q", title="Degree change"),
                     y=alt.Y("node:N", sort="-x", title=None),
-                    color=alt.condition(alt.datum.degree_change >= 0, alt.value("#18B6A4"), alt.value("#EE6C91")),
+                    color=alt.condition(alt.datum.degree_change >= 0, alt.value("#2DD4BF"), alt.value("#8B5CF6")),
                     tooltip=["node", "degree_a", "degree_b", "degree_change"],
                 )
                 .properties(height=390)
@@ -353,7 +368,7 @@ with compare_tab:
                 .encode(
                     x=alt.X("degree_threshold:Q", title="Degree threshold (k)"),
                     y=alt.Y("normalized_phi:Q", title="Normalized rich-club coefficient"),
-                    color=alt.Color("network:N", scale=alt.Scale(range=["#18B6A4", "#EE6C91"]), title=None),
+                    color=alt.Color("network:N", scale=alt.Scale(range=["#2DD4BF", "#8B5CF6"]), title=None),
                     tooltip=["network", "degree_threshold", "normalized_phi"],
                 )
                 .properties(height=360)
@@ -374,7 +389,7 @@ with perturb_tab:
         with left:
             perturb_chart = (
                 alt.Chart(perturbations.head(15))
-                .mark_bar(color="#F59E5B", cornerRadiusEnd=4)
+                .mark_bar(color="#8B5CF6", cornerRadiusEnd=4)
                 .encode(
                     x=alt.X("impact_score:Q", title="Structural impact score"),
                     y=alt.Y("node:N", sort="-x", title=None),
@@ -414,7 +429,7 @@ with perturb_tab:
         plot["lower"] = (plot["largest_component_mean"] - plot["largest_component_std"]).clip(0)
         plot["upper"] = (plot["largest_component_mean"] + plot["largest_component_std"]).clip(upper=1)
         random_plot = plot[plot["strategy"] == "random failure"]
-        band = alt.Chart(random_plot).mark_area(color="#6F9DB5", opacity=0.2).encode(
+        band = alt.Chart(random_plot).mark_area(color="#2DD4BF", opacity=0.18).encode(
             x="fraction_removed:Q", y="lower:Q", y2="upper:Q"
         )
         lines = (
@@ -423,7 +438,7 @@ with perturb_tab:
             .encode(
                 x=alt.X("fraction_removed:Q", title="Fraction of nodes removed", axis=alt.Axis(format="%")),
                 y=alt.Y("largest_component_mean:Q", title="Largest component / original nodes"),
-                color=alt.Color("strategy:N", scale=alt.Scale(range=["#6F9DB5", "#EE6C91"]), title=None),
+                color=alt.Color("strategy:N", scale=alt.Scale(range=["#2DD4BF", "#8B5CF6"]), title=None),
                 tooltip=["strategy", "fraction_removed", "largest_component_mean"],
             )
             .properties(height=390)
@@ -497,7 +512,7 @@ with ml_tab:
                 if node_model == "Graph neural network":
                     loss_chart = (
                         alt.Chart(node_diagnostic)
-                        .mark_line(color="#18B6A4", strokeWidth=3)
+                        .mark_line(color="#2DD4BF", strokeWidth=3)
                         .encode(
                             x=alt.X("epoch:Q", title="Training epoch"),
                             y=alt.Y("training_loss:Q", title="Mean cross-validation training loss"),
@@ -509,7 +524,7 @@ with ml_tab:
                 else:
                     importance_chart = (
                         alt.Chart(node_diagnostic.head(12))
-                        .mark_bar(color="#18B6A4", cornerRadiusEnd=4)
+                        .mark_bar(color="#2DD4BF", cornerRadiusEnd=4)
                         .encode(
                             x=alt.X("importance:Q", title="Random-forest importance"),
                             y=alt.Y("feature:N", sort="-x", title=None),
@@ -558,7 +573,7 @@ with ml_tab:
                     st.markdown("**Neural training curve**")
                     loss_chart = (
                         alt.Chart(link_diagnostic)
-                        .mark_line(color="#EE6C91", strokeWidth=3)
+                        .mark_line(color="#8B5CF6", strokeWidth=3)
                         .encode(
                             x=alt.X("epoch:Q", title="Training epoch"),
                             y=alt.Y("training_loss:Q", title="Reconstruction loss"),
@@ -633,7 +648,7 @@ with ml_tab:
                 if graph_model == "Graph neural network":
                     graph_loss_chart = (
                         alt.Chart(graph_diagnostic)
-                        .mark_line(color="#F59E5B", strokeWidth=3)
+                        .mark_line(color="#A78BFA", strokeWidth=3)
                         .encode(
                             x=alt.X("epoch:Q", title="Training epoch"),
                             y=alt.Y("training_loss:Q", title="Mean cross-validation training loss"),
@@ -655,4 +670,4 @@ with ml_tab:
         )
 
 st.divider()
-st.caption("NodeSafari · Open-source network discovery for basic science · v1.1.0")
+st.caption("NodeSafari · Open-source network discovery for basic science · v1.1.1")

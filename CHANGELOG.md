@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.1 — 2026-09-13
+
+- Introduced a clean white application theme with purple-and-teal accents across navigation, cards, controls, charts, network communities, and documentation artwork.
+- Improved visual contrast with dark plum typography, subtle lavender borders, teal highlights, and restrained background glows.
+
 ## 1.1.0 — 2026-09-13
 
 - Added an end-to-end two-layer GCN for cross-validated node classification.
