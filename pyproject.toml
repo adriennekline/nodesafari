@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nodesafari"
-version = "1.2.1"
+version = "1.3.0"
 description = "Interpretable network discovery, comparison, perturbation, and graph ML."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -29,7 +29,7 @@ dependencies = [
   "numpy>=1.26,<3",
   "pandas>=2.1,<3",
   "scikit-learn>=1.4,<2",
-  "streamlit>=1.40,<2",
+  "streamlit>=1.63,<2",
 ]
 
 [project.optional-dependencies]

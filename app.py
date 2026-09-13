@@ -133,6 +133,136 @@ DOWNLOAD_HELP = {
     "graph_predictions.csv": "Download out-of-fold graph predictions and probabilities.",
 }
 
+DATA_PROFILES = {
+    "one_network": {
+        "label": "One network",
+        "capabilities": {"network"},
+    },
+    "two_networks": {
+        "label": "Two networks or conditions",
+        "capabilities": {"network", "comparison"},
+    },
+    "node_labels": {
+        "label": "One network with node labels",
+        "capabilities": {"network", "node_labels"},
+    },
+    "graph_labels": {
+        "label": "Multiple networks with graph labels",
+        "capabilities": {"network", "comparison", "graph_labels"},
+    },
+    "demo": {
+        "label": "I want to learn with the demo data",
+        "capabilities": {"network", "comparison", "node_labels", "graph_labels"},
+    },
+}
+
+NAVIGATOR_GOALS = {
+    "organize": {
+        "question": "What organizes this network?",
+        "title": "Map network structure",
+        "primary": "Community detection",
+        "supporting": "Hubs and centrality, k-core structure, bridges, and global statistics",
+        "why": "Use complementary structural views to find modules, central nodes, and connectors without assuming labels.",
+        "requires": {"network"},
+        "needs": "One edge-list network",
+        "workspace": "02  Explore",
+        "path": "Explore → Overview & hubs, Communities, Core & bridges",
+        "icon": "compass",
+        "caveat": "Detected structure is descriptive and should be interpreted with domain knowledge.",
+    },
+    "rich_club": {
+        "question": "Do highly connected nodes form an unusually dense core?",
+        "title": "Test rich-club organization",
+        "primary": "Normalized rich-club analysis",
+        "supporting": "Degree centrality and k-core structure",
+        "why": "Compare the observed connectivity among high-degree nodes with degree-preserving null networks.",
+        "requires": {"network"},
+        "needs": "One sufficiently connected edge-list network",
+        "workspace": "02  Explore",
+        "path": "Explore → Rich club",
+        "icon": "network",
+        "caveat": "Small or sparse networks can produce unstable normalized coefficients.",
+    },
+    "compare": {
+        "question": "What changed between two networks or conditions?",
+        "title": "Run differential network analysis",
+        "primary": "Differential hubs and whole-network statistics",
+        "supporting": "Differential communities and differential rich-club curves",
+        "why": "Separate global reorganization from node-level changes and shifts in modular structure.",
+        "requires": {"network", "comparison"},
+        "needs": "Two edge-list networks with comparable node identities",
+        "workspace": "03  Compare",
+        "path": "Compare → Network & hubs, Communities, Rich club",
+        "icon": "exchange",
+        "caveat": "A two-network contrast is descriptive; replicated observations are needed for population-level inference.",
+    },
+    "critical": {
+        "question": "Which nodes or connections are structurally critical?",
+        "title": "Simulate network disruption",
+        "primary": "Node and edge deletion screens",
+        "supporting": "Bridge analysis and targeted-versus-random robustness",
+        "why": "Rank elements by the structural damage caused by removing them and examine network resilience.",
+        "requires": {"network"},
+        "needs": "One edge-list network",
+        "workspace": "04  Perturb",
+        "path": "Perturb → Remove nodes, Remove edges, Robustness",
+        "icon": "flask",
+        "caveat": "Structural impact does not establish causal or experimental importance.",
+    },
+    "similar": {
+        "question": "Which nodes have similar structural roles?",
+        "title": "Compare node representations",
+        "primary": "Spectral node embeddings",
+        "supporting": "Nearest-node search and community assignments",
+        "why": "Represent each node by its network context and rank nodes occupying similar structural positions.",
+        "requires": {"network"},
+        "needs": "One edge-list network",
+        "workspace": "05  Predict",
+        "path": "Predict → Node embeddings",
+        "icon": "chart-line",
+        "caveat": "Embedding similarity suggests a shared network role, not necessarily shared function.",
+    },
+    "node_prediction": {
+        "question": "Can network information predict labels for nodes?",
+        "title": "Evaluate node classification",
+        "primary": "Class-balanced random forest baseline",
+        "supporting": "Two-layer graph convolutional network",
+        "why": "Establish an interpretable baseline, then test whether a GCN adds useful signal from topology.",
+        "requires": {"network", "node_labels"},
+        "needs": "One network plus a node-and-label CSV with at least two classes",
+        "workspace": "05  Predict",
+        "path": "Predict → Node prediction",
+        "icon": "brain",
+        "caveat": "Use out-of-fold scores for model comparison and reserve external data for final validation.",
+    },
+    "link_prediction": {
+        "question": "Which connections may be missing?",
+        "title": "Rank candidate links",
+        "primary": "Random forest link-prediction baseline",
+        "supporting": "GCN graph autoencoder",
+        "why": "Evaluate recovery of hidden observed edges before ranking currently absent connections.",
+        "requires": {"network"},
+        "needs": "One network with enough observed and absent node pairs",
+        "workspace": "05  Predict",
+        "path": "Predict → Link prediction",
+        "icon": "network",
+        "caveat": "A high score prioritizes validation; it is not evidence that a connection exists.",
+    },
+    "graph_prediction": {
+        "question": "Can I classify entire networks?",
+        "title": "Evaluate graph classification",
+        "primary": "Random forest graph-level baseline",
+        "supporting": "Pooled two-layer graph convolutional network",
+        "why": "Test whether whole-network structure distinguishes graph-level classes across independent samples.",
+        "requires": {"network", "graph_labels"},
+        "needs": "Multiple independent edge lists plus graph-level labels with at least two samples per class",
+        "workspace": "05  Predict",
+        "path": "Predict → Graph classification",
+        "icon": "brain",
+        "caveat": "Independent networks—not nodes from one network—must form the evaluation samples.",
+    },
+}
+
 
 @st.cache_resource
 def fontawesome_font_css() -> str:
@@ -233,6 +363,21 @@ st.markdown(
     .context-chip strong { color:#30294e; }
     .context-chip.demo { background:#f5f3ff; border-color:#ddd6fe; color:#6d28d9; }
     .context-chip.upload { background:#ecfdf9; border-color:#99f6e4; color:#0f766e; }
+    .navigator-card {
+      border:1px solid #ddd6ee; border-radius:15px; background:linear-gradient(135deg,#ffffff,#fbfaff);
+      padding:1rem 1.05rem; box-shadow:0 8px 22px rgba(55,35,100,.05); margin:.2rem 0 .75rem;
+    }
+    .navigator-heading { display:flex; gap:.65rem; align-items:flex-start; }
+    .navigator-heading .fa-icon { flex:0 0 2rem; width:2rem; height:2rem; border-radius:9px; color:#fff; background:linear-gradient(135deg,#7c3aed,#0f9f91); }
+    .navigator-title { color:#261f42; font-size:1.02rem; font-weight:740; line-height:1.25; }
+    .navigator-primary { color:#0f766e; font-size:.78rem; font-weight:700; margin-top:.2rem; }
+    .navigator-grid { display:grid; grid-template-columns:1fr 1fr; gap:.65rem 1.2rem; margin-top:.9rem; }
+    .navigator-item { color:#625d76; font-size:.79rem; line-height:1.45; }
+    .navigator-item b { display:block; color:#827b93; font-size:.66rem; letter-spacing:.08em; text-transform:uppercase; margin-bottom:.12rem; }
+    .navigator-route { color:#5b21b6; background:#f2efff; border:1px solid #ddd6fe; border-radius:9px; padding:.55rem .7rem; margin-top:.8rem; font-size:.79rem; font-weight:680; }
+    .navigator-caveat { color:#716b84; font-size:.75rem; line-height:1.42; margin-top:.65rem; }
+    .navigator-placeholder { color:#716b84; font-size:.84rem; padding:.75rem .1rem .2rem; }
+    @media (max-width:800px) { .navigator-grid { grid-template-columns:1fr; } }
     [data-testid="stMetric"] {
       background:linear-gradient(145deg,#ffffff,#fbfaff);
       border:1px solid #e2dcf2;
@@ -359,11 +504,37 @@ def source_card(label: str, value: str, metadata: str) -> None:
     )
 
 
+def navigator_card(recommendation: dict[str, object]) -> None:
+    """Render a method recommendation with inputs, rationale, route, and caveat."""
+
+    description = str(recommendation["why"])
+    st.markdown(
+        '<div class="navigator-card"><div class="navigator-heading">'
+        f"{fa_icon(str(recommendation['icon']), description)}<div>"
+        f'<div class="navigator-title">{escape(str(recommendation["title"]))}</div>'
+        f'<div class="navigator-primary">Primary method · '
+        f"{escape(str(recommendation['primary']))}</div></div></div>"
+        '<div class="navigator-grid">'
+        f'<div class="navigator-item"><b>Why this fits</b>{escape(description)}</div>'
+        f'<div class="navigator-item"><b>Supporting methods</b>'
+        f"{escape(str(recommendation['supporting']))}</div>"
+        f'<div class="navigator-item"><b>Required inputs</b>'
+        f"{escape(str(recommendation['needs']))}</div>"
+        f'<div class="navigator-item"><b>Recommended order</b>Start with the primary method, '
+        "then use the supporting analyses to check whether the result is consistent.</div></div>"
+        f'<div class="navigator-route">Open automatically · '
+        f"{escape(str(recommendation['path']))}</div>"
+        f'<div class="navigator-caveat">{fa_icon("info", str(recommendation["caveat"]))} '
+        f"{escape(str(recommendation['caveat']))}</div></div>",
+        unsafe_allow_html=True,
+    )
+
+
 with st.sidebar:
     st.markdown(
         f'<div class="brand-lockup"><div class="brand-mark">'
         f"{fa_icon('compass', 'NodeSafari network discovery workspace')}</div><div>"
-        '<div class="brand-name">NodeSafari</div><div class="brand-version">Research workspace · v1.2.1</div>'
+        '<div class="brand-name">NodeSafari</div><div class="brand-version">Research workspace · v1.3.0</div>'
         "</div></div>",
         unsafe_allow_html=True,
     )
@@ -486,6 +657,82 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+with st.expander("Analysis Navigator — start with your question", expanded=True):
+    section_heading(
+        "Choose a defensible starting point",
+        "Tell NodeSafari what you want to learn and what data you have. You will receive a primary method, supporting checks, required inputs, and the exact workspace path.",
+        "Explore",
+    )
+    navigator_left, navigator_right = st.columns([1.25, 1], gap="large")
+    with navigator_left:
+        navigator_goal = st.selectbox(
+            "What do you want to learn?",
+            options=list(NAVIGATOR_GOALS),
+            index=None,
+            format_func=lambda key: NAVIGATOR_GOALS[key]["question"],
+            placeholder="Choose the question closest to yours",
+            help="Select the scientific question first. NodeSafari will recommend a method rather than asking you to choose an algorithm by name.",
+        )
+    with navigator_right:
+        navigator_profiles = list(DATA_PROFILES)
+        default_profile = (
+            "demo" if primary_is_demo else "two_networks" if graph_b is not None else "one_network"
+        )
+        navigator_data = st.selectbox(
+            "What data do you have?",
+            options=navigator_profiles,
+            index=navigator_profiles.index(default_profile),
+            format_func=lambda key: DATA_PROFILES[key]["label"],
+            help="Choose the description of your intended dataset, even if you have not uploaded every file yet.",
+        )
+
+    recommended_workspace = "01  Data & QC"
+    if navigator_goal is None:
+        st.markdown(
+            '<div class="navigator-placeholder">Choose a question above. The navigator will '
+            "recommend methods without hiding any of NodeSafari’s other analyses.</div>",
+            unsafe_allow_html=True,
+        )
+    else:
+        recommendation = NAVIGATOR_GOALS[navigator_goal]
+        recommended_workspace = str(recommendation["workspace"])
+        navigator_card(recommendation)
+        capabilities = DATA_PROFILES[navigator_data]["capabilities"]
+        missing = set(recommendation["requires"]) - set(capabilities)
+        if missing:
+            missing_labels = {
+                "network": "an edge-list network",
+                "comparison": "a second comparable network",
+                "node_labels": "node-level labels",
+                "graph_labels": "multiple independent networks with graph-level labels",
+            }
+            st.warning(
+                "Your selected question needs "
+                + ", ".join(missing_labels[item] for item in sorted(missing))
+                + ". You can still inspect the recommended workspace and use the demo while preparing those inputs."
+            )
+        else:
+            st.success("Your stated data support the recommended analysis.")
+
+        if navigator_goal == "compare" and graph_b is None:
+            st.info("Upload comparison network B in the sidebar to activate this workspace.")
+        elif navigator_goal == "node_prediction" and not primary_is_demo:
+            st.info("Upload the node-label CSV inside Predict → Node prediction.")
+        elif navigator_goal == "graph_prediction" and navigator_data != "demo":
+            st.info(
+                "Upload the independent graph edge lists and graph-label CSV inside "
+                "Predict → Graph classification."
+            )
+
+        compatible = [
+            str(details["question"])
+            for key, details in NAVIGATOR_GOALS.items()
+            if key != navigator_goal and set(details["requires"]) <= set(capabilities)
+        ]
+        with st.popover("Other questions supported by these data"):
+            for question in compatible:
+                st.markdown(f"- {question}")
+
 summary = network_summary(graph_a)
 communities = community_table(graph_a)
 metrics = node_metrics(graph_a)
@@ -500,7 +747,8 @@ metric_row(
 )
 
 qc_tab, explore_tab, compare_tab, perturb_tab, ml_tab = st.tabs(
-    ["01  Data & QC", "02  Explore", "03  Compare", "04  Perturb", "05  Predict"]
+    ["01  Data & QC", "02  Explore", "03  Compare", "04  Perturb", "05  Predict"],
+    default=recommended_workspace,
 )
 
 with qc_tab:
@@ -533,7 +781,7 @@ with qc_tab:
     )
     manifest = pd.DataFrame(
         [
-            {"setting": "NodeSafari version", "value": "1.2.1"},
+            {"setting": "NodeSafari version", "value": "1.3.0"},
             {"setting": "Reference source", "value": primary_source_name},
             {"setting": "Comparison source", "value": comparison_source_name},
             {"setting": "Graph type", "value": "directed" if directed else "undirected"},
@@ -1236,6 +1484,6 @@ with ml_tab:
 st.divider()
 st.markdown(
     '<div class="app-footer">NodeSafari · Open-source network discovery for research · '
-    "v1.2.1 · Exploratory outputs require domain validation</div>",
+    "v1.3.0 · Exploratory outputs require domain validation</div>",
     unsafe_allow_html=True,
 )

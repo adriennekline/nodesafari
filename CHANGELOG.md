@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.3.0 — 2026-09-13
+
+- Added an Analysis Navigator that begins with the research question and available-data profile.
+- Added recommendations for a primary method, complementary checks, required inputs, analysis order, workspace path, and interpretation caveat.
+- Added compatibility checks that identify missing inputs before a user begins an analysis.
+- Added automatic opening of the recommended top-level workspace while preserving the complete toolkit.
+- Added a concise list of other research questions supported by the selected data profile.
+
 ## 1.2.1 — 2026-09-13
 
 - Added self-contained Font Awesome Free icons to workflow navigation, section headings, metrics, data-source cards, empty states, and download controls.

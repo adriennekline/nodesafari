@@ -4,9 +4,9 @@
 
 NodeSafari is an open-source Streamlit application and Python package for researchers who want to explore networks without assembling a custom graph-analysis pipeline. Rich-club organization is included, but the expedition goes further: discover structure, compare conditions, simulate perturbations, and use graph-based machine learning to prioritize follow-up questions. Biological interaction networks are the included example, not a restriction on the software.
 
-> **Status:** v1.2 research release. Outputs are exploratory and do not establish causality.
+> **Status:** v1.3 research release. Outputs are exploratory and do not establish causality.
 
-![NodeSafari interface showing an interaction network, analysis metrics, and ranked nodes](docs/interface-preview.svg)
+![NodeSafari interface showing the Analysis Navigator, an interaction network, and ranked nodes](docs/interface-preview.svg)
 
 ## What researchers can do
 
@@ -19,6 +19,22 @@ NodeSafari is an open-source Streamlit application and Python package for resear
 | Which perturbation most disrupts organization? | Node deletion, edge deletion, and targeted-vs-random robustness screens |
 | Which nodes occupy similar network roles? | Spectral node embeddings and nearest-node search |
 | Can labels or missing interactions be predicted? | Cross-validated random forests and graph neural networks for node, link, and graph tasks |
+
+## Analysis Navigator
+
+Researchers do not need to know an algorithm name before starting. The guided
+Analysis Navigator asks what they want to learn and what data they have, then
+recommends:
+
+- A primary method and complementary analyses
+- The required inputs and whether the stated data are sufficient
+- A sensible order in which to interpret the methods
+- The exact NodeSafari workspace path
+- A method-specific limitation or validation caveat
+
+The recommended top-level workspace opens automatically. All other analyses remain
+available, and the navigator also lists other questions supported by the selected
+data profile.
 
 ## Easiest way to start: Docker
 

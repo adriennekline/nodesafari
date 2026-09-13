@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1440" height="860" viewBox="0 0 1440 860" role="img" aria-labelledby="title desc">
   <title id="title">NodeSafari interface preview</title>
-  <desc id="desc">Professional light network-discovery workspace with explicit data provenance, summary metrics, numbered analysis navigation, a network view, and ranked nodes.</desc>
+  <desc id="desc">Professional light network-discovery workspace with explicit data provenance, a guided Analysis Navigator, numbered workflow tabs, a network view, and ranked nodes.</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffffff"/><stop offset=".62" stop-color="#fbfaff"/><stop offset="1" stop-color="#f0fdfa"/></linearGradient>
     <filter id="shadow"><feDropShadow dx="0" dy="10" stdDeviation="20" flood-color="#372364" flood-opacity=".08"/></filter>
@@ -10,7 +10,7 @@
   <path d="M292 0v860" stroke="#e5def5"/>
   <circle cx="42" cy="49" r="17" fill="#8b5cf6"/><path d="M34 52c8-20 16 19 24-3M35 43c8 19 15-19 23 1" fill="none" stroke="#99f6e4" stroke-width="2.5" stroke-linecap="round"/>
   <text x="70" y="48" font-family="Inter,Arial,sans-serif" font-size="20" font-weight="700" fill="#201a3b">NodeSafari</text>
-  <text x="70" y="65" font-family="Inter,Arial,sans-serif" font-size="9" font-weight="700" letter-spacing="1" fill="#807a91">RESEARCH WORKSPACE · V1.2.1</text>
+  <text x="70" y="65" font-family="Inter,Arial,sans-serif" font-size="9" font-weight="700" letter-spacing="1" fill="#807a91">RESEARCH WORKSPACE · V1.3.0</text>
   <text x="30" y="112" font-family="Inter,Arial,sans-serif" font-size="17" font-weight="700" fill="#30294e">Data workspace</text>
   <text x="30" y="141" font-family="Inter,Arial,sans-serif" font-size="13" fill="#716b84">Bring an edge list or use the demo.</text>
   <text x="30" y="184" font-family="Inter,Arial,sans-serif" font-size="13" font-weight="600" fill="#625d76">PRIMARY NETWORK</text>
@@ -37,11 +37,12 @@
   <text x="338" y="108" font-family="Inter,Arial,sans-serif" font-size="13" fill="#625d76">Explore structure, compare networks, simulate perturbations, and evaluate graph-based predictions.</text>
   <g font-family="Inter,Arial,sans-serif" font-size="10" font-weight="600"><rect x="338" y="118" width="104" height="19" rx="9" fill="#f5f3ff" stroke="#ddd6fe"/><text x="350" y="131" fill="#6d28d9">A · Synthetic demo</text><rect x="451" y="118" width="104" height="19" rx="9" fill="#f5f3ff" stroke="#ddd6fe"/><text x="463" y="131" fill="#6d28d9">B · Synthetic demo</text><rect x="564" y="118" width="72" height="19" rx="9" fill="#ffffff" stroke="#ded8ea"/><text x="576" y="131" fill="#625d76">Undirected</text><rect x="645" y="118" width="64" height="19" rx="9" fill="#ffffff" stroke="#ded8ea"/><text x="657" y="131" fill="#625d76">Weighted</text></g>
   <g font-family="Inter,Arial,sans-serif">
-    <g transform="translate(326 154)"><rect width="194" height="82" rx="14" fill="#ffffff" stroke="#e2dcf2"/><text x="18" y="29" font-size="13" fill="#68637d">Nodes</text><text x="18" y="61" font-size="27" font-weight="700" fill="#30294e">22</text></g>
-    <g transform="translate(536 154)"><rect width="194" height="82" rx="14" fill="#ffffff" stroke="#e2dcf2"/><text x="18" y="29" font-size="13" fill="#68637d">Interactions</text><text x="18" y="61" font-size="27" font-weight="700" fill="#30294e">32</text></g>
-    <g transform="translate(746 154)"><rect width="194" height="82" rx="14" fill="#ffffff" stroke="#e2dcf2"/><text x="18" y="29" font-size="13" fill="#68637d">Modules</text><text x="18" y="61" font-size="27" font-weight="700" fill="#30294e">4</text></g>
-    <g transform="translate(956 154)"><rect width="194" height="82" rx="14" fill="#ffffff" stroke="#e2dcf2"/><text x="18" y="29" font-size="13" fill="#68637d">Density</text><text x="18" y="61" font-size="27" font-weight="700" fill="#30294e">0.139</text></g>
-    <g transform="translate(1166 154)"><rect width="194" height="82" rx="14" fill="#ffffff" stroke="#e2dcf2"/><text x="18" y="29" font-size="13" fill="#68637d">Connected</text><text x="18" y="61" font-size="27" font-weight="700" fill="#30294e">100%</text></g>
+    <rect x="326" y="154" width="1034" height="82" rx="14" fill="#ffffff" stroke="#ddd6ee"/>
+    <circle cx="353" cy="177" r="12" fill="#7c3aed"/><path d="M353 168l4 8-4 9-4-9z" fill="#99f6e4"/>
+    <text x="374" y="181" font-size="11" font-weight="700" letter-spacing="1.3" fill="#0f9f91">ANALYSIS NAVIGATOR</text>
+    <rect x="344" y="192" width="310" height="30" rx="8" fill="#fbfaff" stroke="#dcd5e9"/><text x="358" y="212" font-size="12" fill="#30294e">What organizes this network?</text><path d="M632 203l5 5 5-5" fill="none" stroke="#8b5cf6" stroke-width="1.5"/>
+    <rect x="665" y="192" width="220" height="30" rx="8" fill="#fbfaff" stroke="#dcd5e9"/><text x="679" y="212" font-size="12" fill="#30294e">One network</text><path d="M863 203l5 5 5-5" fill="none" stroke="#8b5cf6" stroke-width="1.5"/>
+    <text x="911" y="204" font-size="10" font-weight="700" fill="#847d95">RECOMMENDED</text><text x="911" y="221" font-size="13" font-weight="700" fill="#5b21b6">Community detection → Explore</text>
   </g>
   <g font-family="Inter,Arial,sans-serif" font-size="13"><rect x="448" y="261" width="98" height="38" rx="9" fill="#ede9fe" stroke="#c4b5fd"/><text x="338" y="285" fill="#716b84">01  Data &amp; QC</text><text x="461" y="285" fill="#5b21b6">02  Explore</text><text x="558" y="285" fill="#625d76">03  Compare</text><text x="660" y="285" fill="#625d76">04  Perturb</text><text x="753" y="285" fill="#625d76">05  Predict</text></g>
   <rect x="326" y="322" width="657" height="490" rx="16" fill="#ffffff" stroke="#e2dcf2"/>
