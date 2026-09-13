@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.2 — 2026-09-13
+
+- Generalized product language from biological network discovery to network discovery.
+- Retained biological interaction data as the included example while clarifying that NodeSafari supports any compatible edge-list network.
+
 ## 1.1.1 — 2026-09-13
 
 - Introduced a clean white application theme with purple-and-teal accents across navigation, cards, controls, charts, network communities, and documentation artwork.

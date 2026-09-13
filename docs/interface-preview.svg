@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1440" height="860" viewBox="0 0 1440 860" role="img" aria-labelledby="title desc">
   <title id="title">NodeSafari interface preview</title>
-  <desc id="desc">Dark scientific dashboard with data controls, network metrics, analysis tabs, a gene interaction network, and a ranked node table.</desc>
+  <desc id="desc">Light scientific dashboard with data controls, network metrics, analysis tabs, an interaction network, and a ranked node table.</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffffff"/><stop offset=".62" stop-color="#fbfaff"/><stop offset="1" stop-color="#f0fdfa"/></linearGradient>
     <filter id="shadow"><feDropShadow dx="0" dy="10" stdDeviation="20" flood-color="#000" flood-opacity=".28"/></filter>
@@ -25,7 +25,7 @@
   <text x="47" y="552" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="700" fill="#68637d">EXPECTED FORMAT</text>
   <text x="47" y="581" font-family="ui-monospace,monospace" font-size="12" fill="#0f9f91">source,target,weight</text>
   <text x="47" y="606" font-family="ui-monospace,monospace" font-size="12" fill="#30294e">TP53,MDM2,2.8</text>
-  <text x="326" y="51" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="700" letter-spacing="2.2" fill="#0f9f91">BIOLOGICAL NETWORK DISCOVERY</text>
+  <text x="326" y="51" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="700" letter-spacing="2.2" fill="#0f9f91">NETWORK DISCOVERY</text>
   <text x="326" y="92" font-family="Inter,Arial,sans-serif" font-size="34" font-weight="750" fill="#201a3b">NodeSafari</text>
   <text x="326" y="121" font-family="Inter,Arial,sans-serif" font-size="15" fill="#625d76">Discover modules, compare conditions, simulate perturbations, and learn graph representations.</text>
   <g filter="url(#shadow)" font-family="Inter,Arial,sans-serif">

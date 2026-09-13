@@ -1,12 +1,12 @@
 # NodeSafari
 
-**Explore biological networks. Return with testable hypotheses.**
+**Explore networks. Return with testable hypotheses.**
 
-NodeSafari is an open-source Streamlit application and Python package for researchers who want to explore biological networks without assembling a custom graph-analysis pipeline. Rich-club organization is included, but the expedition goes further: discover structure, compare conditions, simulate perturbations, and use graph-based machine learning to prioritize follow-up questions.
+NodeSafari is an open-source Streamlit application and Python package for researchers who want to explore networks without assembling a custom graph-analysis pipeline. Rich-club organization is included, but the expedition goes further: discover structure, compare conditions, simulate perturbations, and use graph-based machine learning to prioritize follow-up questions. Biological interaction networks are the included example, not a restriction on the software.
 
-> **Status:** v1.1 research release. Outputs are exploratory and do not establish biological causality.
+> **Status:** v1.1 research release. Outputs are exploratory and do not establish causality.
 
-![NodeSafari interface showing a biological interaction network, analysis metrics, and ranked nodes](docs/interface-preview.svg)
+![NodeSafari interface showing an interaction network, analysis metrics, and ranked nodes](docs/interface-preview.svg)
 
 ## What researchers can do
 
@@ -106,7 +106,7 @@ print(ranked_nodes.head())
 
 ## Scientific guardrails
 
-NodeSafari deliberately labels its outputs as structural candidates or predictions. A high-impact node is not automatically a therapeutic target, and a predicted link is not evidence of a molecular interaction. See [Methods and interpretation](docs/METHODS.md) for assumptions and limitations.
+NodeSafari deliberately labels its outputs as structural candidates or predictions. A high-impact node is not automatically a causal target, and a predicted link is not evidence that an interaction exists. See [Methods and interpretation](docs/METHODS.md) for assumptions and limitations.
 
 ## Self-hosting
 
@@ -134,10 +134,10 @@ start command.
 
 ## Roadmap beyond v1.0
 
-- Statistical testing for differential networks across biological replicates
+- Statistical testing for differential networks across replicated observations
 - Temporal-network analysis
 - Node metadata and pathway enrichment
-- Heterogeneous and multilayer biological graphs
+- Heterogeneous and multilayer graphs
 - Counterfactual analysis with uncertainty estimates
 
 ## Contributing

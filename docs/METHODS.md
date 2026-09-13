@@ -1,6 +1,6 @@
 # Methods and interpretation
 
-NodeSafari is designed for exploratory and hypothesis-generating analysis. It does not infer molecular causality.
+NodeSafari is designed for exploratory and hypothesis-generating analysis. It does not infer causality.
 
 ## Rich-club analysis
 
@@ -8,9 +8,9 @@ For degree threshold `k`, the rich-club coefficient is the density of the subgra
 
 ## Communities
 
-Communities are estimated with greedy modularity maximization. Community labels are arbitrary identifiers and should not be interpreted as biological classes without external validation.
+Communities are estimated with greedy modularity maximization. Community labels are arbitrary identifiers and should not be interpreted as domain classes without external validation.
 
-For two-network comparison, NodeSafari calculates adjusted Rand index and normalized mutual information on shared nodes. Community labels in network B are greedily aligned to network A by node overlap before the fraction of reassigned nodes is reported. This alignment aids interpretation; it is not a statistical test across biological replicates.
+For two-network comparison, NodeSafari calculates adjusted Rand index and normalized mutual information on shared nodes. Community labels in network B are greedily aligned to network A by node overlap before the fraction of reassigned nodes is reported. This alignment aids interpretation; it is not a statistical test across replicated observations.
 
 ## Core–periphery and bridges
 
@@ -26,7 +26,7 @@ Robustness analysis compares adaptive removal of the current highest-degree node
 
 ## Spectral embeddings
 
-Node vectors are learned by truncated singular-value decomposition of the symmetrically normalized weighted adjacency matrix. Nearby nodes have similar structural contexts; similarity does not necessarily imply shared molecular function.
+Node vectors are learned by truncated singular-value decomposition of the symmetrically normalized weighted adjacency matrix. Nearby nodes have similar structural contexts; similarity does not necessarily imply shared function.
 
 ## Node prediction
 
@@ -48,7 +48,7 @@ NodeSafari also provides three CPU-oriented neural alternatives implemented dire
 - **Link prediction:** a two-layer GCN encoder learns node embeddings by reconstructing observed edges against sampled absent pairs. A dot-product decoder scores held-out edges and candidate missing interactions. Evaluation reports ROC AUC and average precision on balanced held-out positive and negative pairs.
 - **Graph classification:** a shared two-layer GCN generates node embeddings for each independent graph, mean pooling creates a graph representation, and a neural classification head predicts the graph label. Evaluation uses stratified graph-level folds.
 
-All three models use ReLU activations, cross-entropy or binary cross-entropy objectives, L2 regularization, Adam optimization, fixed random seeds, and class weighting where applicable. Training-loss curves are diagnostic only; model selection should rely on held-out performance and external biological validation.
+All three models use ReLU activations, cross-entropy or binary cross-entropy objectives, L2 regularization, Adam optimization, fixed random seeds, and class weighting where applicable. Training-loss curves are diagnostic only; model selection should rely on held-out performance and external domain validation.
 
 ## Differential rich club
 

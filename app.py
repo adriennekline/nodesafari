@@ -137,7 +137,7 @@ except (GraphInputError, pd.errors.ParserError, UnicodeDecodeError) as error:
     st.error(str(error))
     st.stop()
 
-st.markdown('<div class="eyebrow">Biological network discovery</div>', unsafe_allow_html=True)
+st.markdown('<div class="eyebrow">Network discovery</div>', unsafe_allow_html=True)
 st.title("NodeSafari")
 st.markdown(
     '<div class="lede">Upload → quality-check → explore → compare → perturb → predict. '
@@ -257,7 +257,7 @@ with explore_tab:
             st.download_button("Download communities", csv_bytes(communities), "communities.csv", "text/csv")
         st.markdown(
             '<p class="method-note">Communities use greedy modularity optimization and '
-            "should be interpreted alongside biological annotation.</p>",
+            "should be interpreted alongside relevant domain annotation.</p>",
             unsafe_allow_html=True,
         )
 
@@ -591,7 +591,7 @@ with ml_tab:
             st.dataframe(top_link_predictions(graph_a, top_n=25), hide_index=True, width="stretch")
         st.markdown(
             '<p class="method-note">Evaluation hides observed edges, trains on the remaining '
-            "topology, and tests recovery. Candidates still require biological validation.</p>",
+            "topology, and tests recovery. Candidates still require domain validation.</p>",
             unsafe_allow_html=True,
         )
 
@@ -670,4 +670,4 @@ with ml_tab:
         )
 
 st.divider()
-st.caption("NodeSafari · Open-source network discovery for basic science · v1.1.1")
+st.caption("NodeSafari · Open-source network discovery for research · v1.1.2")

@@ -1,4 +1,4 @@
-"""NodeSafari: interpretable network discovery for biological data."""
+"""NodeSafari: interpretable network discovery for research data."""
 
 from .analysis import (
     community_table,
@@ -56,4 +56,4 @@ __all__ = [
     "top_link_predictions",
 ]
 
-__version__ = "1.1.1"
+__version__ = "1.1.2"
