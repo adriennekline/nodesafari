@@ -112,13 +112,15 @@ NodeSafari opens with synthetic control and disease-like interaction networks. N
 2. **Explore** — hubs, rich club, communities, k-core position, bridges, and statistics
 3. **Compare** — whole-network, hub, community, and rich-club changes
 4. **Perturb** — node deletion, edge deletion, and robustness curves
-5. **ML** — embeddings plus node, link, and graph-level prediction
+5. **ML** — embeddings plus random-forest and graph-neural-network prediction
 
 Start in **Data & QC** to confirm that the example inputs pass validation, then use
 **Explore** to inspect the network and ranked nodes. Open **Compare** to see how the
 included disease-like network differs from the control network. The **ML** workspace
 includes synthetic labels and a generated graph dataset, so its workflows run before
-you upload supervised-learning data. Analysis tables can be downloaded as CSV.
+you upload supervised-learning data. Use the **Model** controls to switch between
+interpretable random-forest baselines and the neural models. Analysis tables can be
+downloaded as CSV.
 
 ## Upload your own data
 

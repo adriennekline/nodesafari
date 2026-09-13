@@ -18,6 +18,11 @@ from nodesafari.ml import (
     learned_link_prediction,
     node_prediction,
 )
+from nodesafari.neural import (
+    neural_graph_classification,
+    neural_link_prediction,
+    neural_node_prediction,
+)
 from nodesafari.perturbation import edge_perturbation_screen, robustness_curve
 from nodesafari.structure import bridge_analysis, core_periphery_table, network_statistics_table
 
@@ -156,3 +161,33 @@ def test_supervised_ml_workflows_return_cross_validated_outputs():
     assert graph_scores["cv_folds"] >= 2
     assert len(graph_results) == 24
     assert not graph_importance.empty
+
+
+def test_graph_neural_network_workflows_return_validated_outputs():
+    graph = nx.barabasi_albert_graph(24, 2, seed=4)
+    labels = pd.DataFrame(
+        {
+            "node": [str(node) for node in graph],
+            "label": ["early" if node < 12 else "late" for node in graph],
+        }
+    )
+    graph = nx.relabel_nodes(graph, str)
+    node_scores, node_results, node_history = neural_node_prediction(
+        graph, labels, epochs=25
+    )
+    link_scores, link_results, link_history = neural_link_prediction(
+        graph, epochs=25, seed=4
+    )
+    graphs, graph_labels = demo_graph_dataset(seed=4)
+    graph_scores, graph_results, graph_history = neural_graph_classification(
+        graphs, graph_labels, epochs=25
+    )
+
+    assert node_scores["model"] == "two-layer GCN"
+    assert len(node_results) == 24 and node_history["training_loss"].notna().all()
+    assert 0 <= link_scores["average_precision"] <= 1
+    assert not link_results.empty and link_history["training_loss"].notna().all()
+    assert graph_scores["model"] == "pooled two-layer GCN"
+    assert len(graph_results) == 24 and graph_history["training_loss"].notna().all()
+    for row in link_results.itertuples():
+        assert not graph.has_edge(row.source, row.target)

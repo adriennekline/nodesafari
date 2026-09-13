@@ -40,6 +40,16 @@ Observed non-bridge edges are held out, and a class-balanced random forest learn
 
 Each uploaded graph becomes one sample described by size, density, degree distribution, clustering, transitivity, assortativity, connectivity, and efficiency. A class-balanced random forest is evaluated with stratified cross-validation. This workflow requires independent graphs—not nodes from one graph—as samples. The included demo contrasts synthetic small-world and preferential-attachment graph families.
 
+## Graph neural networks
+
+NodeSafari also provides three CPU-oriented neural alternatives implemented directly with NumPy:
+
+- **Node classification:** a two-layer graph convolutional network (GCN) propagates structural and optional numeric node features through the normalized adjacency matrix. Evaluation is transductive and stratified: the full topology and node features are visible, but labels in each test fold are withheld during training.
+- **Link prediction:** a two-layer GCN encoder learns node embeddings by reconstructing observed edges against sampled absent pairs. A dot-product decoder scores held-out edges and candidate missing interactions. Evaluation reports ROC AUC and average precision on balanced held-out positive and negative pairs.
+- **Graph classification:** a shared two-layer GCN generates node embeddings for each independent graph, mean pooling creates a graph representation, and a neural classification head predicts the graph label. Evaluation uses stratified graph-level folds.
+
+All three models use ReLU activations, cross-entropy or binary cross-entropy objectives, L2 regularization, Adam optimization, fixed random seeds, and class weighting where applicable. Training-loss curves are diagnostic only; model selection should rely on held-out performance and external biological validation.
+
 ## Differential rich club
 
 Normalized curves are estimated independently for both networks with separate seeded degree-preserving null ensembles. NodeSafari reports the difference at shared degree thresholds. This descriptive comparison is not a replicate-aware inferential test.

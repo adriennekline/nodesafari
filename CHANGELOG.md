@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.1.0 — 2026-09-13
+
+- Added an end-to-end two-layer GCN for cross-validated node classification.
+- Added a GCN graph autoencoder for held-out-edge evaluation and missing-link ranking.
+- Added a pooled two-layer GCN for cross-validated whole-graph classification.
+- Added model selectors and neural training curves while retaining random forests as interpretable baselines.
+- Kept the neural stack CPU-only and dependency-light with a NumPy implementation.
+- Expanded automated coverage to include all three neural workflows.
+
 ## 1.0.0 — 2026-09-13
 
 - Added a complete upload-to-QC workflow with downloadable input reports.

@@ -19,6 +19,11 @@ from .ml import (
     learned_link_prediction,
     node_prediction,
 )
+from .neural import (
+    neural_graph_classification,
+    neural_link_prediction,
+    neural_node_prediction,
+)
 from .perturbation import edge_perturbation_screen, robustness_curve
 from .structure import bridge_analysis, core_periphery_table, network_statistics_table
 
@@ -39,6 +44,9 @@ __all__ = [
     "network_qc",
     "network_statistics_table",
     "network_summary",
+    "neural_graph_classification",
+    "neural_link_prediction",
+    "neural_node_prediction",
     "node_metrics",
     "node_prediction",
     "perturbation_screen",
@@ -48,4 +56,4 @@ __all__ = [
     "top_link_predictions",
 ]
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"

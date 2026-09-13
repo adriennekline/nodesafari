@@ -31,6 +31,11 @@ from nodesafari.ml import (
     learned_link_prediction,
     node_prediction,
 )
+from nodesafari.neural import (
+    neural_graph_classification,
+    neural_link_prediction,
+    neural_node_prediction,
+)
 from nodesafari.perturbation import edge_perturbation_screen, robustness_curve
 from nodesafari.structure import bridge_analysis, core_periphery_table, network_statistics_table
 from nodesafari.visualization import network_figure
@@ -457,12 +462,26 @@ with ml_tab:
 
     with node_ml_subtab:
         st.subheader("Cross-validated node-label prediction")
+        node_model = st.radio(
+            "Model",
+            ["Random forest", "Graph neural network"],
+            horizontal=True,
+            key="node_model",
+        )
         node_label_upload = st.file_uploader(
             "Node labels", type="csv", help="Required: node, label. Numeric columns become features.", key="node_labels"
         )
         node_labels = read_csv(node_label_upload, EXAMPLES / "node_labels.csv")
         try:
-            node_scores, node_results, node_importance = node_prediction(graph_a, node_labels)
+            if node_model == "Graph neural network":
+                node_scores, node_results, node_diagnostic = neural_node_prediction(
+                    graph_a, node_labels
+                )
+            else:
+                node_scores, node_results, node_diagnostic = node_prediction(
+                    graph_a, node_labels
+                )
+            st.caption(f"Model: {node_scores.get('model', 'class-balanced random forest')}")
             metric_row(
                 [
                     ("Labeled nodes", node_scores["labeled_nodes"], None),
@@ -475,30 +494,54 @@ with ml_tab:
             with left:
                 st.dataframe(node_results, hide_index=True, width="stretch", height=350)
             with right:
-                importance_chart = (
-                    alt.Chart(node_importance.head(12))
-                    .mark_bar(color="#18B6A4", cornerRadiusEnd=4)
-                    .encode(
-                        x=alt.X("importance:Q", title="Random-forest importance"),
-                        y=alt.Y("feature:N", sort="-x", title=None),
-                        tooltip=["feature", "importance"],
+                if node_model == "Graph neural network":
+                    loss_chart = (
+                        alt.Chart(node_diagnostic)
+                        .mark_line(color="#18B6A4", strokeWidth=3)
+                        .encode(
+                            x=alt.X("epoch:Q", title="Training epoch"),
+                            y=alt.Y("training_loss:Q", title="Mean cross-validation training loss"),
+                            tooltip=["epoch", "training_loss"],
+                        )
+                        .properties(height=350)
                     )
-                    .properties(height=350)
-                )
-                st.altair_chart(styled(importance_chart), width="stretch")
+                    st.altair_chart(styled(loss_chart), width="stretch")
+                else:
+                    importance_chart = (
+                        alt.Chart(node_diagnostic.head(12))
+                        .mark_bar(color="#18B6A4", cornerRadiusEnd=4)
+                        .encode(
+                            x=alt.X("importance:Q", title="Random-forest importance"),
+                            y=alt.Y("feature:N", sort="-x", title=None),
+                            tooltip=["feature", "importance"],
+                        )
+                        .properties(height=350)
+                    )
+                    st.altair_chart(styled(importance_chart), width="stretch")
             st.download_button("Download node predictions", csv_bytes(node_results), "node_predictions.csv", "text/csv")
         except MLInputError as error:
             st.warning(str(error))
         st.markdown(
-            '<p class="method-note">Scores are out-of-fold estimates. Included labels are '
-            "synthetic; replace them with experimental outcomes.</p>",
+            '<p class="method-note">Scores are out-of-fold estimates. The GCN is '
+            "transductive: it uses the full network structure but only training-fold labels. "
+            "Included labels are synthetic; replace them with experimental outcomes.</p>",
             unsafe_allow_html=True,
         )
 
     with link_ml_subtab:
         st.subheader("Learned missing-interaction ranking")
+        link_model = st.radio(
+            "Model",
+            ["Random forest", "Graph autoencoder"],
+            horizontal=True,
+            key="link_model",
+        )
         try:
-            link_scores, link_predictions, link_importance = learned_link_prediction(graph_a)
+            if link_model == "Graph autoencoder":
+                link_scores, link_predictions, link_diagnostic = neural_link_prediction(graph_a)
+            else:
+                link_scores, link_predictions, link_diagnostic = learned_link_prediction(graph_a)
+            st.caption(f"Model: {link_scores.get('model', 'class-balanced random forest')}")
             metric_row(
                 [
                     ("Training edges", link_scores["training_edges"], None),
@@ -511,8 +554,22 @@ with ml_tab:
             with left:
                 st.dataframe(link_predictions, hide_index=True, width="stretch", height=390)
             with right:
-                st.markdown("**Model feature importance**")
-                st.dataframe(link_importance, hide_index=True, width="stretch")
+                if link_model == "Graph autoencoder":
+                    st.markdown("**Neural training curve**")
+                    loss_chart = (
+                        alt.Chart(link_diagnostic)
+                        .mark_line(color="#EE6C91", strokeWidth=3)
+                        .encode(
+                            x=alt.X("epoch:Q", title="Training epoch"),
+                            y=alt.Y("training_loss:Q", title="Reconstruction loss"),
+                            tooltip=["epoch", "training_loss"],
+                        )
+                        .properties(height=320)
+                    )
+                    st.altair_chart(styled(loss_chart), width="stretch")
+                else:
+                    st.markdown("**Model feature importance**")
+                    st.dataframe(link_diagnostic, hide_index=True, width="stretch")
             st.download_button("Download learned link predictions", csv_bytes(link_predictions), "learned_link_predictions.csv", "text/csv")
         except MLInputError as error:
             st.warning(f"{error} Showing the structural ranking instead.")
@@ -525,6 +582,12 @@ with ml_tab:
 
     with graph_ml_subtab:
         st.subheader("Cross-validated graph classification")
+        graph_model = st.radio(
+            "Model",
+            ["Random forest", "Graph neural network"],
+            horizontal=True,
+            key="graph_model",
+        )
         st.caption("Upload multiple edge-list CSVs plus graph labels, or run the topology demo.")
         graph_files = st.file_uploader("Graph edge lists", type="csv", accept_multiple_files=True, key="graph_files")
         graph_labels_file = st.file_uploader("Graph labels", type="csv", help="Columns: graph, label", key="graph_labels")
@@ -544,7 +607,15 @@ with ml_tab:
             else:
                 graph_dataset, graph_labels = demo_graph_dataset()
                 demo_mode = True
-            graph_scores, graph_results, graph_importance = graph_classification(graph_dataset, graph_labels)
+            if graph_model == "Graph neural network":
+                graph_scores, graph_results, graph_diagnostic = neural_graph_classification(
+                    graph_dataset, graph_labels
+                )
+            else:
+                graph_scores, graph_results, graph_diagnostic = graph_classification(
+                    graph_dataset, graph_labels
+                )
+            st.caption(f"Model: {graph_scores.get('model', 'class-balanced random forest')}")
             metric_row(
                 [
                     ("Graphs", graph_scores["graphs"], None),
@@ -559,7 +630,21 @@ with ml_tab:
             with left:
                 st.dataframe(graph_results, hide_index=True, width="stretch", height=340)
             with right:
-                st.dataframe(graph_importance, hide_index=True, width="stretch", height=340)
+                if graph_model == "Graph neural network":
+                    graph_loss_chart = (
+                        alt.Chart(graph_diagnostic)
+                        .mark_line(color="#F59E5B", strokeWidth=3)
+                        .encode(
+                            x=alt.X("epoch:Q", title="Training epoch"),
+                            y=alt.Y("training_loss:Q", title="Mean cross-validation training loss"),
+                            tooltip=["epoch", "training_loss"],
+                        )
+                        .properties(height=340)
+                    )
+                    st.altair_chart(styled(graph_loss_chart), width="stretch")
+                else:
+                    st.markdown("**Model feature importance**")
+                    st.dataframe(graph_diagnostic, hide_index=True, width="stretch", height=340)
             st.download_button("Download graph predictions", csv_bytes(graph_results), "graph_predictions.csv", "text/csv")
         except (MLInputError, GraphInputError, pd.errors.ParserError) as error:
             st.warning(str(error))
@@ -570,4 +655,4 @@ with ml_tab:
         )
 
 st.divider()
-st.caption("NodeSafari · Open-source network discovery for basic science · v1.0.0")
+st.caption("NodeSafari · Open-source network discovery for basic science · v1.1.0")
