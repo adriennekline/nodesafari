@@ -4,7 +4,7 @@
 
 NodeSafari is an open-source Streamlit application and Python package for researchers who want to explore networks without assembling a custom graph-analysis pipeline. Rich-club organization is included, but the expedition goes further: discover structure, compare conditions, simulate perturbations, and use graph-based machine learning to prioritize follow-up questions. Biological interaction networks are the included example, not a restriction on the software.
 
-> **Status:** v1.1 research release. Outputs are exploratory and do not establish causality.
+> **Status:** v1.2 research release. Outputs are exploratory and do not establish causality.
 
 ![NodeSafari interface showing an interaction network, analysis metrics, and ranked nodes](docs/interface-preview.svg)
 
@@ -92,6 +92,11 @@ Supervised ML inputs use two additional formats:
 
 The app ships with synthetic node labels and a generated graph-classification dataset so every workflow can be explored immediately.
 
+NodeSafari keeps demo and uploaded inputs separate. If you upload a reference
+network without a comparison network, the comparison workspace remains disabled
+until you upload network B. Likewise, demo node labels are never applied to an
+uploaded network.
+
 ## Use the analysis package directly
 
 ```python
@@ -131,6 +136,16 @@ The included container can run on a workstation, institutional server, or any Do
 The neural models are implemented with NumPy for compact, CPU-only operation. They
 do not require PyTorch, specialized graph libraries, a GPU, or changes to the Docker
 start command.
+
+## Refined in v1.2
+
+- Professional analysis workspace with a clearer header and numbered workflow navigation
+- Visible input provenance, direction, and weighting context on every screen
+- Downloadable analysis manifest for recording active inputs and run settings
+- Compact sidebar with explicit active-data cards and organized analysis settings
+- Guided empty states for comparison and supervised-learning workflows
+- Strict separation between uploaded datasets and synthetic examples
+- More consistent result introductions, metric definitions, research caveats, and exports
 
 ## Roadmap beyond v1.0
 

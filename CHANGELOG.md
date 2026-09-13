@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.2.0 — 2026-09-13
+
+- Reworked the application shell with a clearer visual hierarchy, professional product header, numbered workflow navigation, and consistent section introductions.
+- Added an always-visible analysis context bar for input provenance, graph direction, and weight status.
+- Redesigned the sidebar around active-data cards and compact settings and format panels.
+- Added a downloadable analysis manifest that records active inputs and key run settings.
+- Added intentional empty states for optional comparison and supervised-learning inputs.
+- Prevented custom reference networks from being silently paired with synthetic comparison data.
+- Prevented custom networks from being silently paired with synthetic node labels.
+- Improved metric help text, model context, chart presentation, tables, downloads, and research guardrail language.
+
 ## 1.1.2 — 2026-09-13
 
 - Generalized product language from biological network discovery to network discovery.

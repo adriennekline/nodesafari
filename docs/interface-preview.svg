@@ -1,43 +1,52 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1440" height="860" viewBox="0 0 1440 860" role="img" aria-labelledby="title desc">
   <title id="title">NodeSafari interface preview</title>
-  <desc id="desc">Light scientific dashboard with data controls, network metrics, analysis tabs, an interaction network, and a ranked node table.</desc>
+  <desc id="desc">Professional light network-discovery workspace with explicit data provenance, summary metrics, numbered analysis navigation, a network view, and ranked nodes.</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffffff"/><stop offset=".62" stop-color="#fbfaff"/><stop offset="1" stop-color="#f0fdfa"/></linearGradient>
-    <filter id="shadow"><feDropShadow dx="0" dy="10" stdDeviation="20" flood-color="#000" flood-opacity=".28"/></filter>
+    <filter id="shadow"><feDropShadow dx="0" dy="10" stdDeviation="20" flood-color="#372364" flood-opacity=".08"/></filter>
   </defs>
   <rect width="1440" height="860" rx="24" fill="url(#bg)"/>
   <rect x="0" y="0" width="292" height="860" rx="24" fill="#faf9ff"/>
   <path d="M292 0v860" stroke="#e5def5"/>
   <circle cx="42" cy="49" r="17" fill="#8b5cf6"/><path d="M34 52c8-20 16 19 24-3M35 43c8 19 15-19 23 1" fill="none" stroke="#99f6e4" stroke-width="2.5" stroke-linecap="round"/>
-  <text x="70" y="56" font-family="Inter,Arial,sans-serif" font-size="21" font-weight="700" fill="#201a3b">NodeSafari</text>
+  <text x="70" y="48" font-family="Inter,Arial,sans-serif" font-size="20" font-weight="700" fill="#201a3b">NodeSafari</text>
+  <text x="70" y="65" font-family="Inter,Arial,sans-serif" font-size="9" font-weight="700" letter-spacing="1" fill="#807a91">RESEARCH WORKSPACE · V1.2</text>
   <text x="30" y="112" font-family="Inter,Arial,sans-serif" font-size="17" font-weight="700" fill="#30294e">Data workspace</text>
-  <text x="30" y="141" font-family="Inter,Arial,sans-serif" font-size="13" fill="#716b84">Upload an edge list or use the demo.</text>
+  <text x="30" y="141" font-family="Inter,Arial,sans-serif" font-size="13" fill="#716b84">Bring an edge list or use the demo.</text>
   <text x="30" y="184" font-family="Inter,Arial,sans-serif" font-size="13" font-weight="600" fill="#625d76">PRIMARY NETWORK</text>
   <rect x="30" y="199" width="232" height="68" rx="10" fill="#ffffff" stroke="#cfc5e8" stroke-dasharray="5 4"/>
   <path d="M139 220v22m-8-13 8-9 8 9" fill="none" stroke="#2dd4bf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
   <text x="93" y="256" font-family="Inter,Arial,sans-serif" font-size="12" fill="#68637d">Drop CSV or browse</text>
   <text x="30" y="310" font-family="Inter,Arial,sans-serif" font-size="13" font-weight="600" fill="#625d76">COMPARISON NETWORK</text>
-  <rect x="30" y="325" width="232" height="68" rx="10" fill="#ffffff" stroke="#cfc5e8"/>
-  <circle cx="52" cy="359" r="6" fill="#14b8a6"/><text x="69" y="364" font-family="Inter,Arial,sans-serif" font-size="13" fill="#30294e">Disease example loaded</text>
-  <text x="30" y="442" font-family="Inter,Arial,sans-serif" font-size="13" fill="#625d76">Rich-club null networks</text>
-  <line x1="30" y1="469" x2="262" y2="469" stroke="#ddd6ec" stroke-width="5" stroke-linecap="round"/><line x1="30" y1="469" x2="111" y2="469" stroke="#14b8a6" stroke-width="5" stroke-linecap="round"/><circle cx="111" cy="469" r="9" fill="#ffffff" stroke="#8b5cf6" stroke-width="3"/><text x="231" y="454" font-family="Inter,Arial,sans-serif" font-size="12" fill="#716b84">20</text>
-  <rect x="30" y="527" width="232" height="106" rx="12" fill="#f5f3ff"/>
-  <text x="47" y="552" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="700" fill="#68637d">EXPECTED FORMAT</text>
-  <text x="47" y="581" font-family="ui-monospace,monospace" font-size="12" fill="#0f9f91">source,target,weight</text>
-  <text x="47" y="606" font-family="ui-monospace,monospace" font-size="12" fill="#30294e">TP53,MDM2,2.8</text>
-  <text x="326" y="51" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="700" letter-spacing="2.2" fill="#0f9f91">NETWORK DISCOVERY</text>
-  <text x="326" y="92" font-family="Inter,Arial,sans-serif" font-size="34" font-weight="750" fill="#201a3b">NodeSafari</text>
-  <text x="326" y="121" font-family="Inter,Arial,sans-serif" font-size="15" fill="#625d76">Discover modules, compare conditions, simulate perturbations, and learn graph representations.</text>
-  <g filter="url(#shadow)" font-family="Inter,Arial,sans-serif">
+  <rect x="30" y="325" width="232" height="68" rx="10" fill="#ffffff" stroke="#cfc5e8" stroke-dasharray="5 4"/>
+  <path d="M139 346v22m-8-13 8-9 8 9" fill="none" stroke="#2dd4bf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="93" y="382" font-family="Inter,Arial,sans-serif" font-size="12" fill="#68637d">Drop CSV or browse</text>
+  <rect x="30" y="414" width="232" height="58" rx="10" fill="#ffffff" stroke="#e4deef"/>
+  <text x="44" y="434" font-family="Inter,Arial,sans-serif" font-size="9" font-weight="700" letter-spacing="1" fill="#847d95">ACTIVE REFERENCE</text>
+  <text x="44" y="455" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="700" fill="#30294e">Synthetic reference example</text>
+  <rect x="30" y="484" width="232" height="58" rx="10" fill="#ffffff" stroke="#e4deef"/>
+  <text x="44" y="504" font-family="Inter,Arial,sans-serif" font-size="9" font-weight="700" letter-spacing="1" fill="#847d95">ACTIVE COMPARISON</text>
+  <text x="44" y="525" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="700" fill="#30294e">Synthetic comparison example</text>
+  <rect x="30" y="563" width="232" height="46" rx="10" fill="#ffffff" stroke="#e4deef"/>
+  <text x="46" y="591" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="650" fill="#30294e">Analysis settings</text><path d="M239 581l6 6 6-6" fill="none" stroke="#8b5cf6" stroke-width="1.5"/>
+  <rect x="30" y="620" width="232" height="46" rx="10" fill="#ffffff" stroke="#e4deef"/>
+  <text x="46" y="648" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="650" fill="#30294e">CSV format</text><path d="M239 638l6 6 6-6" fill="none" stroke="#8b5cf6" stroke-width="1.5"/>
+  <rect x="314" y="20" width="1058" height="122" rx="17" fill="#ffffff" stroke="#e7e2f1"/>
+  <text x="338" y="48" font-family="Inter,Arial,sans-serif" font-size="11" font-weight="700" letter-spacing="1.8" fill="#0f9f91">NODESAFARI · INTERPRETABLE NETWORK DISCOVERY</text>
+  <text x="338" y="82" font-family="Inter,Arial,sans-serif" font-size="31" font-weight="750" fill="#201a3b">Turn connected data into testable questions.</text>
+  <text x="338" y="108" font-family="Inter,Arial,sans-serif" font-size="13" fill="#625d76">Explore structure, compare networks, simulate perturbations, and evaluate graph-based predictions.</text>
+  <g font-family="Inter,Arial,sans-serif" font-size="10" font-weight="600"><rect x="338" y="118" width="104" height="19" rx="9" fill="#f5f3ff" stroke="#ddd6fe"/><text x="350" y="131" fill="#6d28d9">A · Synthetic demo</text><rect x="451" y="118" width="104" height="19" rx="9" fill="#f5f3ff" stroke="#ddd6fe"/><text x="463" y="131" fill="#6d28d9">B · Synthetic demo</text><rect x="564" y="118" width="72" height="19" rx="9" fill="#ffffff" stroke="#ded8ea"/><text x="576" y="131" fill="#625d76">Undirected</text><rect x="645" y="118" width="64" height="19" rx="9" fill="#ffffff" stroke="#ded8ea"/><text x="657" y="131" fill="#625d76">Weighted</text></g>
+  <g font-family="Inter,Arial,sans-serif">
     <g transform="translate(326 154)"><rect width="194" height="82" rx="14" fill="#ffffff" stroke="#e2dcf2"/><text x="18" y="29" font-size="13" fill="#68637d">Nodes</text><text x="18" y="61" font-size="27" font-weight="700" fill="#30294e">22</text></g>
     <g transform="translate(536 154)"><rect width="194" height="82" rx="14" fill="#ffffff" stroke="#e2dcf2"/><text x="18" y="29" font-size="13" fill="#68637d">Interactions</text><text x="18" y="61" font-size="27" font-weight="700" fill="#30294e">32</text></g>
     <g transform="translate(746 154)"><rect width="194" height="82" rx="14" fill="#ffffff" stroke="#e2dcf2"/><text x="18" y="29" font-size="13" fill="#68637d">Modules</text><text x="18" y="61" font-size="27" font-weight="700" fill="#30294e">4</text></g>
     <g transform="translate(956 154)"><rect width="194" height="82" rx="14" fill="#ffffff" stroke="#e2dcf2"/><text x="18" y="29" font-size="13" fill="#68637d">Density</text><text x="18" y="61" font-size="27" font-weight="700" fill="#30294e">0.139</text></g>
     <g transform="translate(1166 154)"><rect width="194" height="82" rx="14" fill="#ffffff" stroke="#e2dcf2"/><text x="18" y="29" font-size="13" fill="#68637d">Connected</text><text x="18" y="61" font-size="27" font-weight="700" fill="#30294e">100%</text></g>
   </g>
-  <g font-family="Inter,Arial,sans-serif" font-size="14"><rect x="436" y="261" width="75" height="38" rx="9" fill="#ede9fe" stroke="#c4b5fd"/><text x="342" y="285" fill="#716b84">Data &amp; QC</text><text x="450" y="285" fill="#5b21b6">Explore</text><text x="525" y="285" fill="#625d76">Compare</text><text x="607" y="285" fill="#625d76">Perturb</text><text x="686" y="285" fill="#625d76">ML</text></g>
+  <g font-family="Inter,Arial,sans-serif" font-size="13"><rect x="448" y="261" width="98" height="38" rx="9" fill="#ede9fe" stroke="#c4b5fd"/><text x="338" y="285" fill="#716b84">01  Data &amp; QC</text><text x="461" y="285" fill="#5b21b6">02  Explore</text><text x="558" y="285" fill="#625d76">03  Compare</text><text x="660" y="285" fill="#625d76">04  Perturb</text><text x="753" y="285" fill="#625d76">05  Predict</text></g>
   <rect x="326" y="322" width="657" height="490" rx="16" fill="#ffffff" stroke="#e2dcf2"/>
-  <text x="351" y="356" font-family="Inter,Arial,sans-serif" font-size="17" font-weight="700" fill="#30294e">Interaction network</text>
+  <text x="351" y="348" font-family="Inter,Arial,sans-serif" font-size="10" font-weight="700" letter-spacing="1.4" fill="#0f9f91">EXPLORE</text>
+  <text x="351" y="373" font-family="Inter,Arial,sans-serif" font-size="18" font-weight="700" fill="#30294e">Network overview</text>
   <g fill="none" stroke="#968daa" stroke-opacity=".55" stroke-width="2">
     <path d="M479 452L590 400 684 466 612 563 484 564ZM590 400L776 412 830 512 684 466M612 563L747 650 830 512M484 564L415 659 555 726 747 650M776 412L887 448M830 512L900 594M747 650L847 706M415 659L368 553M479 452L387 426M684 466L720 369M612 563L548 486M590 400L548 486M548 486L484 564"/>
   </g>
