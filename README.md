@@ -4,7 +4,7 @@
 
 NodeSafari is an open-source Streamlit application and Python package for researchers who want to explore networks without assembling a custom graph-analysis pipeline. Rich-club organization is included, but the expedition goes further: discover structure, compare conditions, simulate perturbations, and use graph-based machine learning to prioritize follow-up questions. Biological interaction networks are the included example, not a restriction on the software.
 
-> **Status:** v1.3 research release. Outputs are exploratory and do not establish causality.
+> **Status:** v1.4 research release. Outputs are exploratory and do not establish causality.
 
 ![NodeSafari interface showing the Analysis Navigator, an interaction network, and ranked nodes](docs/interface-preview.svg)
 
@@ -14,7 +14,7 @@ NodeSafari is an open-source Streamlit application and Python package for resear
 |---|---|
 | Is my input ready to analyze? | Quality-control report for endpoints, loops, duplicates, weights, and connectivity |
 | Which nodes and modules organize the network? | Centrality, communities, k-core structure, bridges, and global statistics |
-| Are highly connected nodes unusually interconnected? | Normalized rich-club analysis with degree-preserving null networks |
+| Are highly connected nodes unusually interconnected? | Binary or weighted rich-club analysis with null envelopes, empirical evidence, membership, and edge roles |
 | What changes between control and disease? | Differential hubs, communities, and normalized rich-club curves |
 | Which perturbation most disrupts organization? | Node deletion, edge deletion, and targeted-vs-random robustness screens |
 | Which nodes occupy similar network roles? | Spectral node embeddings and nearest-node search |
@@ -164,6 +164,15 @@ start command.
 - Guided empty states for comparison and supervised-learning workflows
 - Strict separation between uploaded datasets and synthetic examples
 - More consistent result introductions, metric definitions, research caveats, and exports
+
+## Expanded in v1.4
+
+- Binary and Opsahl-style weighted rich-club coefficients using degree or strength thresholds
+- Configurable null-ensemble size, rewiring intensity, retained-node safeguard, and random seed
+- Observed and null curves with a 95% null envelope, normalized enrichment, empirical p-values, and descriptive BH q-values
+- Explicit flags for small rich sets and conservative exploratory-signal designation
+- Threshold-specific rich-club membership plus rich-club, feeder, and local edge classification
+- Role-colored network visualization and downloadable membership, edge-role, Methods, settings, and SVG files
 
 ## Roadmap beyond v1.0
 

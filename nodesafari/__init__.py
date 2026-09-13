@@ -7,6 +7,8 @@ from .analysis import (
     node_metrics,
     perturbation_screen,
     rich_club_curve,
+    rich_club_edge_roles,
+    rich_club_members,
     spectral_embedding,
     top_link_predictions,
 )
@@ -51,9 +53,11 @@ __all__ = [
     "node_prediction",
     "perturbation_screen",
     "rich_club_curve",
+    "rich_club_edge_roles",
+    "rich_club_members",
     "robustness_curve",
     "spectral_embedding",
     "top_link_predictions",
 ]
 
-__version__ = "1.3.0"
+__version__ = "1.4.0"

@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.4.0 — 2026-09-13
+
+- Expanded rich-club analysis to match the evidence, interpretation, membership, and reporting workflow established in RichClub Explorer.
+- Added binary and weighted coefficients with degree or strength richness thresholds.
+- Added configurable rewiring intensity, minimum retained-node safeguards, and analysis seeds.
+- Added 95% null envelopes, empirical one-sided p-values, descriptive BH q-values, and exploratory-signal flags.
+- Added threshold-specific node membership and rich-club, feeder, and local edge classification.
+- Added role-colored network visualization plus Methods, settings, membership, edge-role, and SVG exports.
+
 ## 1.3.0 — 2026-09-13
 
 - Added an Analysis Navigator that begins with the research question and available-data profile.

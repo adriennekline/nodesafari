@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import math
 from collections.abc import Iterable
+from typing import Literal
 
 import networkx as nx
 import numpy as np
@@ -69,9 +70,11 @@ def node_metrics(graph: nx.Graph) -> pd.DataFrame:
         }
         for node in undirected
     ]
-    return pd.DataFrame(rows).sort_values(
-        ["degree_centrality", "betweenness"], ascending=False
-    ).reset_index(drop=True)
+    return (
+        pd.DataFrame(rows)
+        .sort_values(["degree_centrality", "betweenness"], ascending=False)
+        .reset_index(drop=True)
+    )
 
 
 def _community_partition(graph: nx.Graph) -> list[set[str]]:
@@ -79,9 +82,7 @@ def _community_partition(graph: nx.Graph) -> list[set[str]]:
         return []
     if graph.number_of_edges() == 0:
         return [{str(node)} for node in graph]
-    communities = nx.community.greedy_modularity_communities(
-        graph.to_undirected(), weight="weight"
-    )
+    communities = nx.community.greedy_modularity_communities(graph.to_undirected(), weight="weight")
     return [set(group) for group in communities]
 
 
@@ -95,71 +96,244 @@ def community_table(graph: nx.Graph) -> pd.DataFrame:
     return pd.DataFrame(records)
 
 
-def _rich_club_phi(graph: nx.Graph, thresholds: Iterable[int]) -> dict[int, float]:
-    degrees = dict(graph.degree())
-    values: dict[int, float] = {}
+Richness = Literal["degree", "strength"]
+
+
+def _richness_values(graph: nx.Graph, richness: Richness) -> dict[object, float]:
+    if richness == "degree":
+        return {node: float(value) for node, value in graph.degree()}
+    if richness == "strength":
+        return {node: float(value) for node, value in graph.degree(weight="weight")}
+    raise ValueError("richness must be 'degree' or 'strength'.")
+
+
+def _rich_club_phi(
+    graph: nx.Graph,
+    thresholds: Iterable[float],
+    *,
+    richness: Richness = "degree",
+    weighted: bool = False,
+) -> tuple[dict[float, float], dict[float, int], dict[float, int]]:
+    scores = _richness_values(graph, richness)
+    strongest_weights = sorted(
+        (float(data.get("weight", 1.0)) for _, _, data in graph.edges(data=True)),
+        reverse=True,
+    )
+    values: dict[float, float] = {}
+    node_counts: dict[float, int] = {}
+    edge_counts: dict[float, int] = {}
     for threshold in thresholds:
-        members = [node for node, degree in degrees.items() if degree > threshold]
+        members = [node for node, score in scores.items() if score > threshold]
         count = len(members)
+        subgraph = graph.subgraph(members)
+        edge_count = subgraph.number_of_edges()
+        node_counts[threshold] = count
+        edge_counts[threshold] = edge_count
         if count < 2:
             values[threshold] = float("nan")
             continue
-        edge_count = graph.subgraph(members).number_of_edges()
-        values[threshold] = 2 * edge_count / (count * (count - 1))
-    return values
+        if weighted:
+            numerator = sum(
+                float(data.get("weight", 1.0)) for _, _, data in subgraph.edges(data=True)
+            )
+            denominator = sum(strongest_weights[:edge_count])
+            values[threshold] = numerator / denominator if denominator > 0 else float("nan")
+        else:
+            values[threshold] = 2 * edge_count / (count * (count - 1))
+    return values, node_counts, edge_counts
+
+
+def _benjamini_hochberg(p_values: np.ndarray) -> np.ndarray:
+    adjusted = np.full_like(p_values, np.nan, dtype=float)
+    finite = np.flatnonzero(np.isfinite(p_values))
+    if finite.size == 0:
+        return adjusted
+    order = finite[np.argsort(p_values[finite])]
+    ranked = p_values[order] * finite.size / np.arange(1, finite.size + 1)
+    ranked = np.minimum.accumulate(ranked[::-1])[::-1]
+    adjusted[order] = np.minimum(ranked, 1.0)
+    return adjusted
+
+
+def rich_club_members(
+    graph: nx.Graph, threshold: float, *, richness: Richness = "degree"
+) -> set[object]:
+    """Return nodes whose selected richness is strictly greater than a threshold."""
+
+    undirected = nx.Graph(graph.to_undirected())
+    undirected.remove_edges_from(nx.selfloop_edges(undirected))
+    scores = _richness_values(undirected, richness)
+    return {node for node, score in scores.items() if score > threshold}
+
+
+def rich_club_edge_roles(
+    graph: nx.Graph, threshold: float, *, richness: Richness = "degree"
+) -> pd.DataFrame:
+    """Classify edges as rich-club, feeder, or local at one threshold."""
+
+    undirected = nx.Graph(graph.to_undirected())
+    undirected.remove_edges_from(nx.selfloop_edges(undirected))
+    members = rich_club_members(undirected, threshold, richness=richness)
+    records = []
+    for source, target, data in undirected.edges(data=True):
+        source_rich = source in members
+        target_rich = target in members
+        edge_class = (
+            "rich-club"
+            if source_rich and target_rich
+            else "feeder"
+            if source_rich or target_rich
+            else "local"
+        )
+        records.append(
+            {
+                "source": source,
+                "target": target,
+                "weight": float(data.get("weight", 1.0)),
+                "edge_class": edge_class,
+            }
+        )
+    return pd.DataFrame(records)
 
 
 def rich_club_curve(
-    graph: nx.Graph, *, randomizations: int = 20, seed: int = 42
+    graph: nx.Graph,
+    *,
+    randomizations: int = 20,
+    seed: int = 42,
+    swaps_per_edge: int = 10,
+    min_rich_nodes: int = 5,
+    richness: Richness = "degree",
+    weighted: bool = False,
 ) -> pd.DataFrame:
     """Estimate observed and degree-preserving normalized rich-club curves.
 
     Normalized values above one indicate denser-than-null connectivity among
     nodes whose degree exceeds the corresponding threshold. The null ensemble
-    uses degree-preserving double-edge swaps.
+    uses degree-preserving double-edge swaps. Weighted analysis uses an
+    Opsahl-style coefficient and shuffles the observed weights over rewired
+    edges; it preserves the global weight distribution but not node strength.
     """
+
+    if randomizations < 1:
+        raise ValueError("randomizations must be at least 1.")
+    if swaps_per_edge < 0:
+        raise ValueError("swaps_per_edge cannot be negative.")
+    if min_rich_nodes < 2:
+        raise ValueError("min_rich_nodes must be at least 2.")
+    if richness == "strength" and not weighted:
+        raise ValueError("Strength-based richness requires weighted=True.")
 
     undirected = nx.Graph(graph.to_undirected())
     undirected.remove_edges_from(nx.selfloop_edges(undirected))
-    max_degree = max((degree for _, degree in undirected.degree()), default=0)
-    thresholds = list(range(max_degree))
-    observed = _rich_club_phi(undirected, thresholds)
-    null_values: dict[int, list[float]] = {k: [] for k in thresholds}
+    if undirected.number_of_nodes() < 3 or undirected.number_of_edges() == 0:
+        raise ValueError("Rich-club analysis requires at least three nodes and one edge.")
+    if weighted:
+        weights = np.asarray(
+            [float(data.get("weight", 1.0)) for _, _, data in undirected.edges(data=True)]
+        )
+        if not np.all(np.isfinite(weights)) or np.any(weights < 0):
+            raise ValueError("Weighted rich-club analysis requires finite, non-negative weights.")
+
+    scores = np.asarray(list(_richness_values(undirected, richness).values()), dtype=float)
+    if richness == "degree":
+        thresholds = [float(value) for value in range(int(scores.max(initial=0)))]
+    else:
+        thresholds = np.unique(scores)[:-1].astype(float).tolist()
+    observed, node_counts, edge_counts = _rich_club_phi(
+        undirected, thresholds, richness=richness, weighted=weighted
+    )
+    null_matrix = np.full((randomizations, len(thresholds)), np.nan, dtype=float)
 
     rng = np.random.default_rng(seed)
-    for _ in range(max(randomizations, 0)):
-        null_graph = undirected.copy()
+    for randomization in range(randomizations):
+        null_graph = nx.Graph()
+        null_graph.add_nodes_from(undirected.nodes())
+        null_graph.add_edges_from(undirected.edges())
         edges = null_graph.number_of_edges()
-        if edges >= 2:
+        swaps = int(swaps_per_edge * edges)
+        if null_graph.number_of_nodes() >= 4 and edges >= 2 and swaps > 0:
             try:
                 nx.double_edge_swap(
                     null_graph,
-                    nswap=max(edges * 3, 1),
-                    max_tries=max(edges * 100, 100),
-                    seed=int(rng.integers(0, 2**31 - 1)),
+                    nswap=swaps,
+                    max_tries=max(100, swaps * 20),
+                    seed=int(rng.integers(0, 2**32 - 1)),
                 )
             except nx.NetworkXAlgorithmError:
                 pass
-        phi = _rich_club_phi(null_graph, thresholds)
-        for threshold, value in phi.items():
-            if np.isfinite(value):
-                null_values[threshold].append(value)
+        if weighted:
+            shuffled_weights = np.asarray(
+                [float(data.get("weight", 1.0)) for _, _, data in undirected.edges(data=True)]
+            )
+            rng.shuffle(shuffled_weights)
+            for (source, target), weight in zip(null_graph.edges(), shuffled_weights, strict=True):
+                null_graph[source][target]["weight"] = float(weight)
+        phi, _, _ = _rich_club_phi(null_graph, thresholds, richness=richness, weighted=weighted)
+        null_matrix[randomization] = [phi[threshold] for threshold in thresholds]
 
     rows = []
-    for threshold in thresholds:
-        samples = null_values[threshold]
-        null_mean = float(np.mean(samples)) if samples else float("nan")
+    p_values = np.full(len(thresholds), np.nan, dtype=float)
+    for index, threshold in enumerate(thresholds):
+        samples = null_matrix[:, index]
+        samples = samples[np.isfinite(samples)]
+        null_mean = float(np.mean(samples)) if samples.size else float("nan")
+        lower, upper = (
+            np.quantile(samples, [0.025, 0.975]) if samples.size else (float("nan"), float("nan"))
+        )
         obs = observed[threshold]
         normalized = obs / null_mean if null_mean > 0 and np.isfinite(obs) else float("nan")
+        if np.isfinite(obs) and samples.size:
+            p_values[index] = (1 + np.sum(samples >= obs)) / (samples.size + 1)
         rows.append(
             {
+                "threshold": threshold,
                 "degree_threshold": threshold,
+                "n_rich_nodes": node_counts[threshold],
+                "n_rich_edges": edge_counts[threshold],
+                "phi_observed": obs,
+                "phi_null_mean": null_mean,
+                "phi_null_lower_95": float(lower),
+                "phi_null_upper_95": float(upper),
+                "rho": normalized,
                 "observed_phi": obs,
                 "null_phi": null_mean,
                 "normalized_phi": normalized,
             }
         )
-    return pd.DataFrame(rows)
+    result = pd.DataFrame(rows)
+    result["p_empirical"] = p_values
+    result["q_bh"] = _benjamini_hochberg(p_values)
+    result["reliable_node_count"] = result["n_rich_nodes"] >= min_rich_nodes
+    result["exploratory_signal"] = (
+        (result["rho"] > 1) & (result["p_empirical"] < 0.05) & result["reliable_node_count"]
+    )
+    result.attrs["parameters"] = {
+        "richness": richness,
+        "weighted": weighted,
+        "randomizations": randomizations,
+        "swaps_per_edge": swaps_per_edge,
+        "seed": seed,
+        "min_rich_nodes": min_rich_nodes,
+    }
+    result.attrs["warnings"] = [
+        *(
+            [
+                (
+                    "Weighted nulls preserve degree and the global weight distribution, "
+                    "but not each node's strength; treat weighted inference as exploratory."
+                )
+            ]
+            if weighted
+            else []
+        ),
+        *(
+            ["Use at least 1,000 null networks for final inference."]
+            if randomizations < 1000
+            else []
+        ),
+    ]
+    return result
 
 
 def _global_efficiency(graph: nx.Graph) -> float:
@@ -196,9 +370,11 @@ def perturbation_screen(graph: nx.Graph) -> pd.DataFrame:
                 else 0,
             }
         )
-    return pd.DataFrame(records).sort_values(
-        ["impact_score", "node"], ascending=[False, True]
-    ).reset_index(drop=True)
+    return (
+        pd.DataFrame(records)
+        .sort_values(["impact_score", "node"], ascending=[False, True])
+        .reset_index(drop=True)
+    )
 
 
 def compare_networks(graph_a: nx.Graph, graph_b: nx.Graph) -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -213,8 +389,12 @@ def compare_networks(graph_a: nx.Graph, graph_b: nx.Graph) -> tuple[pd.DataFrame
         global_rows.append({"metric": metric, "network_a": a, "network_b": b, "change": b - a})
 
     all_nodes = sorted(set(graph_a) | set(graph_b), key=str)
-    centrality_a = nx.degree_centrality(graph_a.to_undirected()) if graph_a.number_of_nodes() > 1 else {}
-    centrality_b = nx.degree_centrality(graph_b.to_undirected()) if graph_b.number_of_nodes() > 1 else {}
+    centrality_a = (
+        nx.degree_centrality(graph_a.to_undirected()) if graph_a.number_of_nodes() > 1 else {}
+    )
+    centrality_b = (
+        nx.degree_centrality(graph_b.to_undirected()) if graph_b.number_of_nodes() > 1 else {}
+    )
     node_rows = []
     for node in all_nodes:
         degree_a = graph_a.degree(node) if node in graph_a else 0
@@ -226,12 +406,18 @@ def compare_networks(graph_a: nx.Graph, graph_b: nx.Graph) -> tuple[pd.DataFrame
                 "degree_b": degree_b,
                 "degree_change": degree_b - degree_a,
                 "centrality_change": centrality_b.get(node, 0.0) - centrality_a.get(node, 0.0),
-                "status": "gained" if node not in graph_a else "lost" if node not in graph_b else "shared",
+                "status": "gained"
+                if node not in graph_a
+                else "lost"
+                if node not in graph_b
+                else "shared",
             }
         )
     nodes = pd.DataFrame(node_rows)
     nodes["absolute_change"] = nodes["degree_change"].abs()
-    nodes = nodes.sort_values(["absolute_change", "node"], ascending=[False, True]).reset_index(drop=True)
+    nodes = nodes.sort_values(["absolute_change", "node"], ascending=[False, True]).reset_index(
+        drop=True
+    )
     return pd.DataFrame(global_rows), nodes
 
 
@@ -273,7 +459,9 @@ def top_link_predictions(graph: nx.Graph, top_n: int = 25) -> pd.DataFrame:
     undirected = graph.to_undirected()
     candidates = list(nx.non_edges(undirected))
     if not candidates:
-        return pd.DataFrame(columns=["source", "target", "score", "common_neighbors", "jaccard", "adamic_adar"])
+        return pd.DataFrame(
+            columns=["source", "target", "score", "common_neighbors", "jaccard", "adamic_adar"]
+        )
     jaccard = {(u, v): score for u, v, score in nx.jaccard_coefficient(undirected, candidates)}
     adamic = {(u, v): score for u, v, score in nx.adamic_adar_index(undirected, candidates)}
     records = []
@@ -283,6 +471,13 @@ def top_link_predictions(graph: nx.Graph, top_n: int = 25) -> pd.DataFrame:
         aa = adamic.get((u, v), adamic.get((v, u), 0.0))
         score = common + jac + math.log1p(aa)
         records.append(
-            {"source": u, "target": v, "score": score, "common_neighbors": common, "jaccard": jac, "adamic_adar": aa}
+            {
+                "source": u,
+                "target": v,
+                "score": score,
+                "common_neighbors": common,
+                "jaccard": jac,
+                "adamic_adar": aa,
+            }
         )
     return pd.DataFrame(records).nlargest(top_n, "score").reset_index(drop=True)

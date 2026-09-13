@@ -7,6 +7,8 @@ from nodesafari.analysis import (
     node_metrics,
     perturbation_screen,
     rich_club_curve,
+    rich_club_edge_roles,
+    rich_club_members,
     spectral_embedding,
     top_link_predictions,
 )
@@ -84,7 +86,55 @@ def test_ml_outputs_have_expected_shape_and_no_existing_links():
 def test_rich_club_curve_has_normalized_columns():
     graph = nx.barabasi_albert_graph(20, 2, seed=1)
     curve = rich_club_curve(graph, randomizations=3, seed=1)
-    assert {"degree_threshold", "observed_phi", "null_phi", "normalized_phi"} <= set(curve.columns)
+    assert {
+        "degree_threshold",
+        "observed_phi",
+        "null_phi",
+        "normalized_phi",
+        "n_rich_nodes",
+        "n_rich_edges",
+        "phi_null_lower_95",
+        "phi_null_upper_95",
+        "p_empirical",
+        "q_bh",
+        "reliable_node_count",
+        "exploratory_signal",
+    } <= set(curve.columns)
+    assert curve["p_empirical"].dropna().between(0.25, 1.0).all()
+
+
+def test_rich_club_analysis_is_reproducible_and_tracks_settings():
+    graph = nx.barabasi_albert_graph(20, 2, seed=3)
+    first = rich_club_curve(graph, randomizations=5, swaps_per_edge=2, min_rich_nodes=4, seed=9)
+    second = rich_club_curve(graph, randomizations=5, swaps_per_edge=2, min_rich_nodes=4, seed=9)
+    pd.testing.assert_frame_equal(first, second)
+    assert first.attrs["parameters"]["swaps_per_edge"] == 2
+    assert first.attrs["parameters"]["min_rich_nodes"] == 4
+
+
+def test_rich_club_membership_and_edge_roles():
+    graph = sample_graph()
+    assert rich_club_members(graph, 2) == {"C"}
+    roles = rich_club_edge_roles(graph, 2)
+    assert (roles["edge_class"] == "feeder").sum() == 3
+    assert (roles["edge_class"] == "local").sum() == 1
+
+
+def test_weighted_rich_club_supports_strength_thresholds():
+    graph = sample_graph()
+    for index, edge in enumerate(graph.edges(), start=1):
+        graph.edges[edge]["weight"] = float(index)
+    curve = rich_club_curve(
+        graph,
+        randomizations=3,
+        swaps_per_edge=1,
+        richness="strength",
+        weighted=True,
+        seed=2,
+    )
+    assert not curve.empty
+    assert curve.attrs["parameters"]["richness"] == "strength"
+    assert curve["phi_observed"].dropna().between(0, 1).all()
 
 
 def test_network_qc_reports_cleaning_and_connectivity():
@@ -172,12 +222,8 @@ def test_graph_neural_network_workflows_return_validated_outputs():
         }
     )
     graph = nx.relabel_nodes(graph, str)
-    node_scores, node_results, node_history = neural_node_prediction(
-        graph, labels, epochs=25
-    )
-    link_scores, link_results, link_history = neural_link_prediction(
-        graph, epochs=25, seed=4
-    )
+    node_scores, node_results, node_history = neural_node_prediction(graph, labels, epochs=25)
+    link_scores, link_results, link_history = neural_link_prediction(graph, epochs=25, seed=4)
     graphs, graph_labels = demo_graph_dataset(seed=4)
     graph_scores, graph_results, graph_history = neural_graph_classification(
         graphs, graph_labels, epochs=25

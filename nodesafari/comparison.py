@@ -17,11 +17,19 @@ def differential_community_analysis(
     table_b = community_table(graph_b).rename(columns={"community": "community_b"})
     common = table_a.merge(table_b, on="node", how="inner")
     if common.empty:
-        summary = {"common_nodes": 0, "adjusted_rand_index": float("nan"), "normalized_mutual_information": float("nan"), "fraction_reassigned": float("nan")}
+        summary = {
+            "common_nodes": 0,
+            "adjusted_rand_index": float("nan"),
+            "normalized_mutual_information": float("nan"),
+            "fraction_reassigned": float("nan"),
+        }
         return summary, common, pd.DataFrame()
 
     overlaps = (
-        common.groupby(["community_b", "community_a"]).size().reset_index(name="overlap").sort_values("overlap", ascending=False)
+        common.groupby(["community_b", "community_a"])
+        .size()
+        .reset_index(name="overlap")
+        .sort_values("overlap", ascending=False)
     )
     mapping: dict[int, int] = {}
     used_a: set[int] = set()
@@ -38,24 +46,50 @@ def differential_community_analysis(
     common["community_b_aligned"] = common["community_b"].map(mapping)
     common["reassigned"] = common["community_a"] != common["community_b_aligned"]
     flows = (
-        common.groupby(["community_a", "community_b_aligned"]).size().reset_index(name="nodes").sort_values("nodes", ascending=False)
+        common.groupby(["community_a", "community_b_aligned"])
+        .size()
+        .reset_index(name="nodes")
+        .sort_values("nodes", ascending=False)
     )
     summary = {
         "common_nodes": len(common),
-        "adjusted_rand_index": float(adjusted_rand_score(common["community_a"], common["community_b"])),
-        "normalized_mutual_information": float(normalized_mutual_info_score(common["community_a"], common["community_b"])),
+        "adjusted_rand_index": float(
+            adjusted_rand_score(common["community_a"], common["community_b"])
+        ),
+        "normalized_mutual_information": float(
+            normalized_mutual_info_score(common["community_a"], common["community_b"])
+        ),
         "fraction_reassigned": float(common["reassigned"].mean()),
     }
-    return summary, common.sort_values(["reassigned", "node"], ascending=[False, True]).reset_index(drop=True), flows.reset_index(drop=True)
+    return (
+        summary,
+        common.sort_values(["reassigned", "node"], ascending=[False, True]).reset_index(drop=True),
+        flows.reset_index(drop=True),
+    )
 
 
 def differential_rich_club(
-    graph_a, graph_b, *, randomizations: int = 20, seed: int = 42
+    graph_a,
+    graph_b,
+    *,
+    randomizations: int = 20,
+    seed: int = 42,
+    swaps_per_edge: int = 10,
+    min_rich_nodes: int = 5,
+    richness: str = "degree",
+    weighted: bool = False,
 ) -> pd.DataFrame:
     """Compare normalized rich-club curves on shared degree thresholds."""
 
-    curve_a = rich_club_curve(graph_a, randomizations=randomizations, seed=seed).add_suffix("_a")
-    curve_b = rich_club_curve(graph_b, randomizations=randomizations, seed=seed + 1).add_suffix("_b")
+    settings = {
+        "randomizations": randomizations,
+        "swaps_per_edge": swaps_per_edge,
+        "min_rich_nodes": min_rich_nodes,
+        "richness": richness,
+        "weighted": weighted,
+    }
+    curve_a = rich_club_curve(graph_a, seed=seed, **settings).add_suffix("_a")
+    curve_b = rich_club_curve(graph_b, seed=seed + 1, **settings).add_suffix("_b")
     merged = curve_a.merge(
         curve_b,
         left_on="degree_threshold_a",
@@ -73,6 +107,10 @@ def differential_rich_club(
         "observed_phi_b",
         "null_phi_a",
         "null_phi_b",
+        "p_empirical_a",
+        "p_empirical_b",
+        "reliable_node_count_a",
+        "reliable_node_count_b",
     ]
     return merged[columns].sort_values("degree_threshold").reset_index(drop=True)
 

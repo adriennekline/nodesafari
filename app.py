@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import json
 from base64 import b64encode
 from html import escape
 from importlib.metadata import PackageNotFoundError, distribution
+from io import BytesIO
 from pathlib import Path
 
 import altair as alt
@@ -18,6 +20,8 @@ from nodesafari.analysis import (
     node_metrics,
     perturbation_screen,
     rich_club_curve,
+    rich_club_edge_roles,
+    rich_club_members,
     spectral_embedding,
     top_link_predictions,
 )
@@ -41,7 +45,11 @@ from nodesafari.neural import (
 )
 from nodesafari.perturbation import edge_perturbation_screen, robustness_curve
 from nodesafari.structure import bridge_analysis, core_periphery_table, network_statistics_table
-from nodesafari.visualization import network_figure
+from nodesafari.visualization import (
+    network_figure,
+    rich_club_curve_figure,
+    rich_club_network_figure,
+)
 
 ROOT = Path(__file__).parent
 EXAMPLES = ROOT / "examples"
@@ -84,6 +92,10 @@ METRIC_HELP = {
     "ROC AUC": "Ability to rank held-out edges above absent pairs; 1 is best and 0.5 is chance.",
     "Average precision": "Precision-recall summary for held-out link recovery; 1 is best.",
     "Graphs": "Independent labeled networks included in graph-level evaluation.",
+    "Rich nodes": "Nodes whose selected richness is strictly above the inspected threshold.",
+    "Rich edges": "Edges connecting two rich-club members at the inspected threshold.",
+    "Empirical p": "One-sided plus-one empirical p-value from the null-network ensemble.",
+    "BH q-value": "Benjamini-Hochberg adjusted value reported descriptively across nested thresholds.",
 }
 
 METRIC_ICONS = {
@@ -108,6 +120,10 @@ METRIC_ICONS = {
     "ROC AUC": "chart-line",
     "Average precision": "chart-line",
     "Graphs": "database",
+    "Rich nodes": "network",
+    "Rich edges": "exchange",
+    "Empirical p": "chart-line",
+    "BH q-value": "shield",
 }
 
 DOWNLOAD_HELP = {
@@ -115,7 +131,9 @@ DOWNLOAD_HELP = {
     "network_b_qc.csv": "Download the complete quality-control report for comparison network B.",
     "nodesafari_analysis_manifest.csv": "Download the active input provenance and analysis settings for reproducibility.",
     "node_metrics.csv": "Download centrality and structural metrics for every node.",
-    "rich_club_curve.csv": "Download observed, null, and normalized rich-club coefficients by degree threshold.",
+    "rich_club_curve.csv": "Download observed, null, normalized, and threshold-level rich-club evidence for the selected richness measure.",
+    "rich_club_membership.csv": "Download every node's richness and membership status at the selected threshold.",
+    "rich_club_edge_roles.csv": "Download rich-club, feeder, and local edge classifications at the selected threshold.",
     "communities.csv": "Download the detected community assignment for every node.",
     "core_periphery.csv": "Download k-core numbers and core-periphery roles for every node.",
     "articulation_nodes.csv": "Download nodes whose removal increases network fragmentation.",
@@ -434,6 +452,76 @@ def csv_bytes(frame: pd.DataFrame) -> bytes:
     return frame.to_csv(index=False).encode("utf-8")
 
 
+def graph_cache_signature(graph) -> tuple[object, ...]:
+    """Return a stable cache key that retains node identities and edge weights."""
+
+    nodes = tuple(sorted(repr(node) for node in graph.nodes()))
+    edges = tuple(
+        sorted(
+            (
+                repr(source),
+                repr(target),
+                float(data.get("weight", 1.0)),
+            )
+            for source, target, data in graph.edges(data=True)
+        )
+    )
+    return (graph.is_directed(), nodes, edges)
+
+
+@st.cache_data(show_spinner=False)
+def cached_rich_club_curve(
+    _graph,
+    graph_signature: tuple[object, ...],
+    randomizations: int,
+    seed: int,
+    swaps_per_edge: int,
+    min_rich_nodes: int,
+    richness: str,
+    weighted: bool,
+) -> pd.DataFrame:
+    """Cache expensive null ensembles across display-only Streamlit reruns."""
+
+    del graph_signature
+    return rich_club_curve(
+        _graph,
+        randomizations=randomizations,
+        seed=seed,
+        swaps_per_edge=swaps_per_edge,
+        min_rich_nodes=min_rich_nodes,
+        richness=richness,
+        weighted=weighted,
+    )
+
+
+@st.cache_data(show_spinner=False)
+def cached_differential_rich_club(
+    _graph_a,
+    _graph_b,
+    graph_a_signature: tuple[object, ...],
+    graph_b_signature: tuple[object, ...],
+    randomizations: int,
+    seed: int,
+    swaps_per_edge: int,
+    min_rich_nodes: int,
+    richness: str,
+    weighted: bool,
+) -> pd.DataFrame:
+    """Cache paired null ensembles across display-only Streamlit reruns."""
+
+    del graph_a_signature, graph_b_signature
+    return differential_rich_club(
+        _graph_a,
+        _graph_b,
+        randomizations=randomizations,
+        seed=seed,
+        swaps_per_edge=swaps_per_edge,
+        min_rich_nodes=min_rich_nodes,
+        richness=richness,
+        weighted=weighted,
+    )
+
+
 def download_csv_button(label: str, frame: pd.DataFrame, file_name: str) -> None:
     """Render a consistently explained CSV export control."""
 
@@ -444,6 +532,49 @@ def download_csv_button(label: str, frame: pd.DataFrame, file_name: str) -> None
         "text/csv",
         help=DOWNLOAD_HELP[file_name],
         on_click="ignore",
+    )
+
+
+def figure_svg_bytes(figure) -> bytes:
+    """Serialize a Matplotlib figure as a scalable vector graphic."""
+
+    buffer = BytesIO()
+    figure.savefig(buffer, format="svg", bbox_inches="tight")
+    return buffer.getvalue()
+
+
+def rich_club_methods_text(
+    *,
+    richness: str,
+    weighted: bool,
+    randomizations: int,
+    swaps_per_edge: int,
+    min_rich_nodes: int,
+    seed: int,
+) -> str:
+    """Generate editable reporting text from the active rich-club settings."""
+
+    coefficient = (
+        "an Opsahl-style weighted rich-club coefficient"
+        if weighted
+        else "the binary rich-club coefficient"
+    )
+    weight_note = (
+        " Edge weights were randomly permuted over rewired edges, preserving the global "
+        "weight distribution but not node strength."
+        if weighted
+        else ""
+    )
+    return (
+        f"Rich-club organization was evaluated across {richness} thresholds using "
+        f"{coefficient}. The observed network was compared with {randomizations} null "
+        "networks generated by degree-preserving double-edge swaps "
+        f"({swaps_per_edge} attempted swaps per edge; random seed {seed}).{weight_note} "
+        "Normalized coefficients were calculated as the observed coefficient divided by "
+        "the mean null coefficient. Empirical one-sided p-values used a plus-one correction, "
+        "and Benjamini-Hochberg q-values were reported descriptively. Thresholds retaining "
+        f"fewer than {min_rich_nodes} rich nodes were flagged as unstable and excluded from "
+        "exploratory-signal designation. Analyses were performed with NodeSafari v1.4.0."
     )
 
 
@@ -534,7 +665,7 @@ with st.sidebar:
     st.markdown(
         f'<div class="brand-lockup"><div class="brand-mark">'
         f"{fa_icon('compass', 'NodeSafari network discovery workspace')}</div><div>"
-        '<div class="brand-name">NodeSafari</div><div class="brand-version">Research workspace · v1.3.0</div>'
+        '<div class="brand-name">NodeSafari</div><div class="brand-version">Research workspace · v1.4.0</div>'
         "</div></div>",
         unsafe_allow_html=True,
     )
@@ -570,13 +701,42 @@ with st.sidebar:
             value=False,
             help="Enable when edge direction matters, such as regulatory or flow networks.",
         )
-        randomizations = st.slider(
+        randomizations = st.select_slider(
             "Rich-club null networks",
-            5,
-            100,
+            options=[10, 25, 50, 100, 250, 500, 1000],
+            value=100,
+            help="Use 1,000 for final inference; smaller ensembles are intended for rapid exploration.",
+        )
+        rich_weighted = st.toggle(
+            "Weighted rich-club coefficient",
+            value=False,
+            help="Use edge weights in the rich-club coefficient. If the input has no weight column, all edges have unit weight.",
+        )
+        richness = st.selectbox(
+            "Richness measure",
+            ["degree", "strength"] if rich_weighted else ["degree"],
+            help="Degree counts connections. Strength sums edge weights and is available only with the weighted coefficient.",
+        )
+        swaps_per_edge = st.slider(
+            "Rich-club swaps per edge",
+            1,
+            25,
+            10,
+            help="Attempted double-edge swaps per edge in each degree-preserving null network.",
+        )
+        min_rich_nodes = st.slider(
+            "Minimum rich nodes",
+            3,
             20,
-            step=5,
-            help="Number of degree-preserving randomized networks used to normalize the rich-club curve.",
+            5,
+            help="Thresholds retaining fewer nodes are flagged as unstable and excluded from signal designation.",
+        )
+        rich_club_seed = st.number_input(
+            "Rich-club random seed",
+            min_value=0,
+            value=42,
+            step=1,
+            help="Fixed seed used to reproduce the null-network ensemble.",
         )
         robustness_repeats = st.slider(
             "Random robustness repeats",
@@ -586,7 +746,7 @@ with st.sidebar:
             step=10,
             help="Number of repeated random-failure simulations used to estimate the robustness band.",
         )
-        st.caption("Higher repeat counts improve stability but take longer.")
+        st.caption("Higher null and robustness repeat counts improve stability but take longer.")
     with st.expander("CSV format", expanded=False):
         st.code("source,target,weight\nTP53,MDM2,1.0", language="text")
         st.caption("The weight column is optional. Node IDs can be text or numbers.")
@@ -615,6 +775,23 @@ try:
 except (GraphInputError, pd.errors.ParserError, UnicodeDecodeError) as error:
     st.error(str(error))
     st.stop()
+
+if rich_weighted:
+    weighted_graphs = [("reference network A", graph_a)]
+    if graph_b is not None:
+        weighted_graphs.append(("comparison network B", graph_b))
+    invalid_weight_sources = [
+        label
+        for label, graph in weighted_graphs
+        if any(float(data.get("weight", 1.0)) < 0 for _, _, data in graph.edges(data=True))
+    ]
+    if invalid_weight_sources:
+        st.error(
+            "Weighted rich-club analysis requires non-negative edge weights. Correct "
+            + " and ".join(invalid_weight_sources)
+            + " or turn off the weighted coefficient."
+        )
+        st.stop()
 
 st.markdown(
     '<div class="hero"><div class="eyebrow">NodeSafari · interpretable network discovery</div>'
@@ -781,7 +958,7 @@ with qc_tab:
     )
     manifest = pd.DataFrame(
         [
-            {"setting": "NodeSafari version", "value": "1.3.0"},
+            {"setting": "NodeSafari version", "value": "1.4.0"},
             {"setting": "Reference source", "value": primary_source_name},
             {"setting": "Comparison source", "value": comparison_source_name},
             {"setting": "Graph type", "value": "directed" if directed else "undirected"},
@@ -792,6 +969,14 @@ with qc_tab:
             {"setting": "Reference nodes", "value": str(int(summary["nodes"]))},
             {"setting": "Reference edges", "value": str(int(summary["edges"]))},
             {"setting": "Rich-club null networks", "value": str(randomizations)},
+            {"setting": "Rich-club richness", "value": richness},
+            {
+                "setting": "Rich-club coefficient",
+                "value": "weighted" if rich_weighted else "binary",
+            },
+            {"setting": "Rich-club swaps per edge", "value": str(swaps_per_edge)},
+            {"setting": "Minimum rich nodes", "value": str(min_rich_nodes)},
+            {"setting": "Rich-club random seed", "value": str(int(rich_club_seed))},
             {"setting": "Robustness repeats", "value": str(robustness_repeats)},
         ]
     )
@@ -831,44 +1016,292 @@ with explore_tab:
     with rich_subtab:
         section_heading(
             "Rich-club organization",
-            "Test whether high-degree nodes connect more densely than expected under a degree-preserving null model.",
+            "Test enrichment against a degree-preserving null ensemble, then inspect the nodes and edge roles behind the curve.",
             "Explore",
         )
-        curve = rich_club_curve(graph_a, randomizations=randomizations)
-        chart_frame = curve.dropna(subset=["normalized_phi"])
-        if chart_frame.empty:
-            st.info("This graph is too small or sparse for a stable normalized curve.")
-        else:
-            chart = (
-                alt.Chart(chart_frame)
-                .mark_line(point=True, color="#2DD4BF", strokeWidth=3)
-                .encode(
-                    x=alt.X("degree_threshold:Q", title="Degree threshold (k)"),
-                    y=alt.Y("normalized_phi:Q", title="Normalized rich-club coefficient"),
-                    tooltip=["degree_threshold", "observed_phi", "null_phi", "normalized_phi"],
+        if directed:
+            st.info(
+                "Rich-club analysis uses the undirected projection of this directed network. "
+                "Interpret the result as connectivity, not directional flow."
+            )
+        curve = cached_rich_club_curve(
+            graph_a,
+            graph_cache_signature(graph_a),
+            randomizations,
+            int(rich_club_seed),
+            swaps_per_edge,
+            min_rich_nodes,
+            richness,
+            rich_weighted,
+        )
+        for warning in curve.attrs.get("warnings", []):
+            st.warning(warning)
+
+        evidence_tab, members_tab, export_tab = st.tabs(
+            ["Evidence", "Membership & roles", "Reproducible export"]
+        )
+        threshold_title = f"{richness.capitalize()} threshold"
+        with evidence_tab:
+            chart_frame = curve.dropna(subset=["rho"])
+            if chart_frame.empty:
+                st.info("This graph is too small or sparse for a stable normalized curve.")
+            else:
+                left, right = st.columns(2, gap="large")
+                with left:
+                    st.markdown("**Observed coefficient and null envelope**")
+                    band = (
+                        alt.Chart(curve)
+                        .mark_area(color="#C4B5FD", opacity=0.32)
+                        .encode(
+                            x=alt.X("threshold:Q", title=threshold_title),
+                            y=alt.Y("phi_null_lower_95:Q", title="Rich-club coefficient φ"),
+                            y2="phi_null_upper_95:Q",
+                            tooltip=[
+                                "threshold",
+                                "n_rich_nodes",
+                                "phi_observed",
+                                "phi_null_mean",
+                                "phi_null_lower_95",
+                                "phi_null_upper_95",
+                            ],
+                        )
+                    )
+                    line_data = curve.melt(
+                        id_vars=["threshold"],
+                        value_vars=["phi_observed", "phi_null_mean"],
+                        var_name="series",
+                        value_name="coefficient",
+                    )
+                    lines = (
+                        alt.Chart(line_data)
+                        .mark_line(point=True, strokeWidth=2.5)
+                        .encode(
+                            x=alt.X("threshold:Q", title=threshold_title),
+                            y=alt.Y("coefficient:Q", title="Rich-club coefficient φ"),
+                            color=alt.Color(
+                                "series:N",
+                                scale=alt.Scale(
+                                    domain=["phi_observed", "phi_null_mean"],
+                                    range=["#0F9F91", "#7C3AED"],
+                                ),
+                                legend=alt.Legend(title=None),
+                            ),
+                            tooltip=["threshold", "series", "coefficient"],
+                        )
+                    )
+                    st.altair_chart(styled((band + lines).properties(height=330)), width="stretch")
+                with right:
+                    st.markdown("**Normalized enrichment and threshold evidence**")
+                    normalized = (
+                        alt.Chart(chart_frame)
+                        .mark_line(point=True, color="#0F9F91", strokeWidth=2.8)
+                        .encode(
+                            x=alt.X("threshold:Q", title=threshold_title),
+                            y=alt.Y("rho:Q", title="Normalized coefficient ρ"),
+                            tooltip=[
+                                "threshold",
+                                "n_rich_nodes",
+                                "n_rich_edges",
+                                "rho",
+                                "p_empirical",
+                                "q_bh",
+                                "reliable_node_count",
+                            ],
+                        )
+                    )
+                    reference = (
+                        alt.Chart(pd.DataFrame({"rho": [1.0]}))
+                        .mark_rule(color="#7C3AED", strokeDash=[5, 5])
+                        .encode(y="rho:Q")
+                    )
+                    signals = (
+                        alt.Chart(chart_frame[chart_frame["exploratory_signal"]])
+                        .mark_point(color="#F97316", filled=True, size=85)
+                        .encode(x="threshold:Q", y="rho:Q", tooltip=["threshold", "rho"])
+                    )
+                    unreliable = (
+                        alt.Chart(chart_frame[~chart_frame["reliable_node_count"]])
+                        .mark_point(color="#9CA3AF", filled=False, size=75)
+                        .encode(x="threshold:Q", y="rho:Q", tooltip=["threshold", "n_rich_nodes"])
+                    )
+                    st.altair_chart(
+                        styled(
+                            (normalized + reference + signals + unreliable).properties(height=330)
+                        ),
+                        width="stretch",
+                    )
+                reliable = chart_frame[chart_frame["reliable_node_count"]]
+                signal_count = int(reliable["exploratory_signal"].sum())
+                peak_source = reliable if not reliable.empty else chart_frame
+                peak = peak_source.loc[peak_source["rho"].idxmax()]
+                st.markdown(
+                    f'<div class="insight">Peak reliable enrichment occurs above '
+                    f"<b>{richness} {peak.threshold:g}</b> (ρ = <b>{peak.rho:.2f}</b>; "
+                    f"{int(peak.n_rich_nodes)} nodes retained). <b>{signal_count}</b> reliable "
+                    "thresholds meet the exploratory ρ &gt; 1 and empirical p &lt; 0.05 rule.</div>",
+                    unsafe_allow_html=True,
                 )
-                .properties(height=360)
-            )
-            rule = (
-                alt.Chart(pd.DataFrame({"y": [1.0]}))
-                .mark_rule(color="#A78BFA", strokeDash=[5, 5])
-                .encode(y="y:Q")
-            )
-            st.altair_chart(styled(chart + rule), width="stretch")
-            peak = chart_frame.loc[chart_frame["normalized_phi"].idxmax()]
             st.markdown(
-                f'<div class="insight">Peak enrichment is above degree '
-                f"<b>{int(peak.degree_threshold)}</b> (normalized φ = "
-                f"<b>{peak.normalized_phi:.2f}</b>). Values above 1 are denser than the "
-                "degree-preserving null ensemble.</div>",
+                '<p class="method-note">A value above one is not sufficient by itself. '
+                "Look for persistence across meaningful thresholds, the full null distribution, "
+                "retained node counts, and sensitivity to network construction.</p>",
                 unsafe_allow_html=True,
             )
-        st.markdown(
-            '<p class="method-note">Inspect the full curve. Small and sparse graphs can '
-            "produce unstable normalized estimates.</p>",
-            unsafe_allow_html=True,
-        )
-        download_csv_button("Download rich-club curve", curve, "rich_club_curve.csv")
+            with st.expander("Threshold-level evidence table", expanded=False):
+                st.dataframe(
+                    curve[
+                        [
+                            "threshold",
+                            "n_rich_nodes",
+                            "n_rich_edges",
+                            "phi_observed",
+                            "phi_null_mean",
+                            "phi_null_lower_95",
+                            "phi_null_upper_95",
+                            "rho",
+                            "p_empirical",
+                            "q_bh",
+                            "reliable_node_count",
+                            "exploratory_signal",
+                        ]
+                    ],
+                    hide_index=True,
+                    width="stretch",
+                )
+            download_csv_button("Download rich-club evidence", curve, "rich_club_curve.csv")
+
+        with members_tab:
+            eligible = curve.loc[curve["reliable_node_count"], "threshold"].tolist()
+            if not eligible:
+                empty_state(
+                    "No reliable membership threshold",
+                    "Lower the minimum-rich-node setting or use a larger, denser network.",
+                )
+            else:
+                selected_threshold = st.selectbox(
+                    "Inspect threshold",
+                    eligible,
+                    index=max(0, len(eligible) // 2),
+                    help="Inspect the exact nodes and edge roles underlying one reliable point on the curve.",
+                )
+                members = rich_club_members(graph_a, selected_threshold, richness=richness)
+                score_weight = "weight" if richness == "strength" else None
+                membership = pd.DataFrame(
+                    [
+                        {
+                            "node": node,
+                            "richness": float(
+                                graph_a.to_undirected().degree(node, weight=score_weight)
+                            ),
+                            "rich_club_member": node in members,
+                        }
+                        for node in graph_a
+                    ]
+                ).sort_values(["rich_club_member", "richness"], ascending=[False, False])
+                edge_roles = rich_club_edge_roles(graph_a, selected_threshold, richness=richness)
+                selected = curve.loc[curve["threshold"] == selected_threshold].iloc[0]
+                metric_row(
+                    [
+                        (
+                            "Rich nodes",
+                            f"{int(selected.n_rich_nodes)}",
+                            "Nodes with richness strictly above the selected threshold.",
+                        ),
+                        (
+                            "Rich edges",
+                            f"{int(selected.n_rich_edges)}",
+                            "Edges connecting two rich-club members at the selected threshold.",
+                        ),
+                        (
+                            "Empirical p",
+                            f"{selected.p_empirical:.3f}",
+                            "One-sided plus-one empirical p-value from the null ensemble.",
+                        ),
+                        (
+                            "BH q-value",
+                            f"{selected.q_bh:.3f}",
+                            "Benjamini-Hochberg adjusted value, reported descriptively because thresholds are nested.",
+                        ),
+                    ]
+                )
+                visual, tables = st.columns([1.25, 1], gap="large")
+                with visual:
+                    role_figure = rich_club_network_figure(
+                        graph_a,
+                        selected_threshold,
+                        richness=richness,
+                        seed=int(rich_club_seed),
+                    )
+                    st.pyplot(role_figure, width="stretch")
+                    st.download_button(
+                        "Download role network SVG",
+                        figure_svg_bytes(role_figure),
+                        "rich_club_roles.svg",
+                        "image/svg+xml",
+                        help="Download a scalable vector figure of membership and edge roles at this threshold.",
+                        on_click="ignore",
+                    )
+                with tables:
+                    st.markdown("**Node membership**")
+                    st.dataframe(membership, hide_index=True, width="stretch", height=220)
+                    download_csv_button(
+                        "Download membership", membership, "rich_club_membership.csv"
+                    )
+                    st.markdown("**Edge roles**")
+                    st.dataframe(edge_roles, hide_index=True, width="stretch", height=220)
+                    download_csv_button(
+                        "Download edge roles", edge_roles, "rich_club_edge_roles.csv"
+                    )
+
+        with export_tab:
+            methods_text = rich_club_methods_text(
+                richness=richness,
+                weighted=rich_weighted,
+                randomizations=randomizations,
+                swaps_per_edge=swaps_per_edge,
+                min_rich_nodes=min_rich_nodes,
+                seed=int(rich_club_seed),
+            )
+            st.text_area(
+                "Generated Methods text",
+                methods_text,
+                height=185,
+                help="Editable reporting language generated from the exact active analysis settings.",
+            )
+            settings = {
+                "software": "NodeSafari",
+                "version": "1.4.0",
+                "source": primary_source_name,
+                "directed_input_projected_to_undirected": directed,
+                "analysis": curve.attrs.get("parameters", {}),
+                "network": summary,
+            }
+            left, middle, right = st.columns(3)
+            left.download_button(
+                "Download Methods text",
+                methods_text,
+                "rich_club_methods.txt",
+                "text/plain",
+                help="Download editable Methods language for this exact run.",
+                on_click="ignore",
+            )
+            publication_figure = rich_club_curve_figure(curve, richness=richness)
+            middle.download_button(
+                "Download curve SVG",
+                figure_svg_bytes(publication_figure),
+                "rich_club_curve.svg",
+                "image/svg+xml",
+                help="Download a publication-oriented scalable vector figure of both rich-club panels.",
+                on_click="ignore",
+            )
+            right.download_button(
+                "Download settings JSON",
+                json.dumps(settings, indent=2, sort_keys=True),
+                "rich_club_settings.json",
+                "application/json",
+                help="Download analysis parameters, source context, and the network summary.",
+                on_click="ignore",
+            )
 
     with community_subtab:
         section_heading(
@@ -1040,11 +1473,20 @@ with compare_tab:
         with rich_compare_subtab:
             section_heading(
                 "Differential rich-club organization",
-                "Compare normalized rich-club profiles across matched degree thresholds.",
+                f"Compare normalized rich-club profiles across matched {richness} thresholds.",
                 "Compare",
             )
-            rich_difference = differential_rich_club(
-                graph_a, graph_b, randomizations=randomizations
+            rich_difference = cached_differential_rich_club(
+                graph_a,
+                graph_b,
+                graph_cache_signature(graph_a),
+                graph_cache_signature(graph_b),
+                randomizations,
+                int(rich_club_seed),
+                swaps_per_edge,
+                min_rich_nodes,
+                richness,
+                rich_weighted,
             )
             long_curve = rich_difference.melt(
                 id_vars="degree_threshold",
@@ -1062,7 +1504,7 @@ with compare_tab:
                     alt.Chart(long_curve)
                     .mark_line(point=True, strokeWidth=3)
                     .encode(
-                        x=alt.X("degree_threshold:Q", title="Degree threshold (k)"),
+                        x=alt.X("degree_threshold:Q", title=f"{richness.capitalize()} threshold"),
                         y=alt.Y("normalized_phi:Q", title="Normalized rich-club coefficient"),
                         color=alt.Color(
                             "network:N",
@@ -1484,6 +1926,6 @@ with ml_tab:
 st.divider()
 st.markdown(
     '<div class="app-footer">NodeSafari · Open-source network discovery for research · '
-    "v1.3.0 · Exploratory outputs require domain validation</div>",
+    "v1.4.0 · Exploratory outputs require domain validation</div>",
     unsafe_allow_html=True,
 )

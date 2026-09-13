@@ -4,7 +4,53 @@ NodeSafari is designed for exploratory and hypothesis-generating analysis. It do
 
 ## Rich-club analysis
 
-For degree threshold `k`, the rich-club coefficient is the density of the subgraph induced by nodes with degree greater than `k`. The normalized coefficient divides the observed density by the mean density from degree-preserving randomized networks. Values greater than one suggest enrichment relative to the selected null model.
+For threshold $k$, let $N_{>k}$ be the number of nodes whose selected richness is
+strictly greater than $k$, and let $E_{>k}$ be the number of edges among those
+nodes. The binary coefficient is
+
+$$
+\phi(k)=\frac{2E_{>k}}{N_{>k}(N_{>k}-1)}.
+$$
+
+This is the density of the subgraph induced by the richer nodes. Richness may be
+defined as degree. In weighted mode it may instead be defined as strength, the sum
+of incident edge weights.
+
+The weighted coefficient is the sum of weights among rich nodes divided by the sum
+of the globally strongest $E_{>k}$ edge weights. This is an Opsahl-style weighted
+formulation. Weighted nulls preserve the degree sequence and global weight
+distribution by randomly permuting weights over rewired edges; they do not preserve
+each node's strength, so weighted inference is explicitly exploratory.
+
+Each null network is generated through double-edge swaps. The number of attempted
+swaps is the selected swaps-per-edge value multiplied by the observed edge count.
+This preserves every node's degree while randomizing which node pairs are connected.
+The normalized coefficient is
+
+$$
+\rho(k)=\frac{\phi_{\mathrm{obs}}(k)}
+{B^{-1}\sum_{b=1}^{B}\phi^{(b)}_{\mathrm{null}}(k)}.
+$$
+
+The 95% null envelope is the 2.5th to 97.5th percentile of the null coefficients.
+The one-sided empirical p-value uses a plus-one correction:
+
+$$
+p(k)=\frac{1+\sum_{b=1}^{B}
+\mathbf{1}[\phi^{(b)}_{\mathrm{null}}(k)\geq\phi_{\mathrm{obs}}(k)]}{B+1}.
+$$
+
+NodeSafari also reports Benjamini-Hochberg q-values as descriptive multiplicity
+information. Thresholds are nested and their tests are therefore dependent; q-values
+do not replace sensitivity analysis across a meaningful, contiguous threshold range.
+A threshold is marked as an exploratory signal only when $\rho>1$, empirical
+$p<0.05$, and the selected minimum number of rich nodes remains. At least 1,000 null
+networks are recommended for final inference; smaller ensembles are for rapid
+exploration.
+
+At an inspected threshold, edges are classified as rich-club when both endpoints
+are rich, feeder when exactly one endpoint is rich, and local when neither endpoint
+is rich. These roles describe topology and do not imply causal or domain function.
 
 ## Communities
 
