@@ -19,25 +19,42 @@ NodeSafari is an open-source Streamlit application and Python package for resear
 | Which nodes occupy similar network roles? | Spectral node embeddings and nearest-node search |
 | Which interactions may be missing? | Interpretable ensemble link prediction |
 
-## Quick start
+## Easiest way to start: Docker
 
-### Docker (recommended for labs and servers)
+Docker is the simplest option because it includes Python and every required package.
+You do **not** need to install Python or create a `.venv`.
+
+1. Install and open [Docker Desktop](https://www.docker.com/products/docker-desktop/).
+2. Open Terminal on macOS/Linux or PowerShell on Windows and run:
 
 ```bash
 git clone https://github.com/adriennekline/nodesafari.git
 cd nodesafari
-docker compose up --build -d
+docker compose up --build
 ```
 
-Open `http://localhost:8501`. The container runs as a non-root user, exposes a health check, uses a read-only filesystem, and retains uploaded data only for the current application session.
+3. Wait for Streamlit to start, then open **[http://localhost:8501](http://localhost:8501)**.
 
-To stop it:
+The first build may take several minutes. Keep the terminal open while using NodeSafari.
+The application opens with synthetic control and disease-like networks, so you can
+try every analysis without preparing a file.
+
+To stop NodeSafari, press `Ctrl+C`, then run:
+
 
 ```bash
 docker compose down
 ```
 
-### Local Python
+Uploaded data are processed locally and are not written to a persistent Docker
+volume by this configuration.
+
+**New to Docker or the command line?** Follow the complete
+[beginner-friendly Docker guide](docs/GETTING_STARTED.md). It includes Windows,
+macOS, and Linux instructions, downloading without Git, a first-analysis walkthrough,
+updates, privacy notes, diagnostics, and troubleshooting.
+
+## Alternative: run with local Python
 
 ```bash
 git clone https://github.com/adriennekline/nodesafari.git
@@ -48,9 +65,8 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-The application opens with two synthetic example networks, so every workflow can be explored before uploading data.
-
-New to Docker or Python? Follow the [complete beginner's guide](docs/GETTING_STARTED.md). It explains both routes step by step, including why Docker does not create or require a `.venv`.
+The `.venv` folder is created by the command above and is used only for the local
+Python route. Docker has its own isolated environment and does not create a `.venv`.
 
 ## Input format
 

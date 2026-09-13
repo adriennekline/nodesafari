@@ -11,3 +11,4 @@
 - Added CSV exports, synthetic examples, tests, citation metadata, and contributor guidance.
 - Added a non-root Docker image, health check, hardened Compose configuration, and self-hosting guidance.
 - Added beginner-friendly Docker and local Python instructions plus BibTeX citation metadata.
+- Added a prominent three-step Docker start path aligned with RichClub Explorer.

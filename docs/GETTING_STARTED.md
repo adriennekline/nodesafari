@@ -15,9 +15,26 @@ Docker does **not** create a `.venv`. It provides its own isolated environment i
 
 ### 1. Install Docker
 
-Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) on macOS or Windows. On Linux, install Docker Engine and the Docker Compose plugin using your distribution's instructions.
+#### Windows
 
-Open Docker Desktop and wait until it reports that Docker is running.
+1. Install [Docker Desktop for Windows](https://docs.docker.com/desktop/setup/install/windows-install/).
+2. Accept the WSL 2 installation or update prompts if Docker displays them.
+3. Restart the computer if requested.
+4. Open Docker Desktop and wait until it reports that Docker is running.
+
+#### macOS
+
+1. Install [Docker Desktop for Mac](https://docs.docker.com/desktop/setup/install/mac-install/).
+2. Choose the Apple silicon or Intel installer appropriate for the Mac.
+3. Open Docker Desktop and wait until it reports that Docker is running.
+
+#### Linux
+
+Install [Docker Engine](https://docs.docker.com/engine/install/) and the Docker
+Compose plugin for your Linux distribution. Start the Docker service before
+continuing. If Docker reports a permission error, follow Docker's
+[Linux post-installation instructions](https://docs.docker.com/engine/install/linux-postinstall/)
+or contact your system administrator.
 
 ### 2. Download NodeSafari
 
@@ -28,21 +45,32 @@ git clone https://github.com/adriennekline/nodesafari.git
 cd nodesafari
 ```
 
-If `git` is unavailable, use **Code → Download ZIP** on the repository page, extract the archive, and open a terminal inside that folder.
+If `git` is unavailable, use **Code → Download ZIP** on the repository page and
+extract the archive. Then open a terminal inside that folder:
+
+- **Windows:** Open the folder in File Explorer, click the address bar, type
+  `powershell`, and press Enter.
+- **macOS:** Open Terminal, type `cd ` with a trailing space, drag the extracted
+  folder into Terminal, and press Enter.
+- **Linux:** Open the folder in your file manager, right-click inside it, and
+  select **Open in Terminal** when available.
 
 ### 3. Build and start the app
 
 ```bash
-docker compose up --build -d
+docker compose up --build
 ```
 
 The first build may take several minutes while Docker downloads Python and installs the required packages.
+Keep this terminal open while using NodeSafari.
 
 ### 4. Open NodeSafari
 
 Visit [http://localhost:8501](http://localhost:8501) in a web browser.
 
 ### 5. Stop the app
+
+Press `Ctrl+C` in the terminal running NodeSafari, then run:
 
 ```bash
 docker compose down
@@ -86,6 +114,10 @@ NodeSafari opens with synthetic control and disease-like interaction networks. N
 4. **Perturb** — structural effects of single-node deletion
 5. **ML lab** — node embeddings, similar nodes, and candidate missing interactions
 
+Start in **Explore** to inspect the example network and ranked nodes. Then open
+**Compare** to see how the included disease-like network differs from the control
+network. Every displayed table can be downloaded as CSV.
+
 ## Upload your own data
 
 Create a CSV file with at least `source` and `target` columns. An optional numeric `weight` column represents interaction strength.
@@ -100,6 +132,21 @@ ATM,CHEK2,2.1
 Use **Primary network** in the sidebar for the network you want to analyze. Use **Comparison network** only when comparing two conditions.
 
 ## Common problems
+
+### `docker: command not found`
+
+Docker is not installed or the terminal has not recognized the installation.
+Install Docker, restart the terminal, and try again.
+
+### `Cannot connect to the Docker daemon`
+
+Docker Desktop or Docker Engine is not running. Start it, wait for the engine to
+become ready, and rerun the command.
+
+### `docker compose` is not recognized
+
+Update Docker Desktop or install the Docker Compose plugin. The current command is
+`docker compose` with a space. Older systems may use `docker-compose` with a hyphen.
 
 ### The browser says the site cannot be reached
 
@@ -118,6 +165,17 @@ Change the first port in `compose.yaml` from `8501:8501` to `8502:8501`, restart
 
 Check that the column names are exactly `source`, `target`, and optionally `weight`. Weight values must be numeric. Remove protected or identifiable data before using a public deployment.
 
+### Apple silicon computer
+
+No configuration change should be necessary. The official Python image supports
+both Apple silicon and standard x86-64 computers.
+
+### Institutional network or proxy error
+
+The first build downloads a base image and Python packages. An institutional
+firewall or proxy may block those downloads. Ask local IT for the institution's
+approved Docker proxy configuration.
+
 ### Start over with a clean Docker build
 
 ```bash
@@ -126,11 +184,59 @@ docker compose build --no-cache
 docker compose up -d
 ```
 
+## Restart and run in the background
+
+Restart without rebuilding when the files have not changed:
+
+```bash
+docker compose up
+```
+
+Run NodeSafari without keeping the terminal attached:
+
+```bash
+docker compose up --detach
+```
+
+The application remains available at [http://localhost:8501](http://localhost:8501).
+Stop a detached application with `docker compose down`.
+
 ## Updating NodeSafari
 
 From the repository folder:
 
 ```bash
-git pull
-docker compose up --build -d
+git pull --ff-only
+docker compose up --build
 ```
+
+If NodeSafari was downloaded as a ZIP, download the newest ZIP into a new folder
+and run `docker compose up --build` from that folder.
+
+## Data handling and privacy
+
+The provided Compose configuration runs NodeSafari locally and does not create a
+persistent Docker volume for uploaded data. Uploaded tables are processed inside
+the running application and are not intentionally written to persistent container
+storage. The original file remains wherever it was saved on the computer.
+
+Do not expose port 8501 publicly or use confidential or regulated data in an
+externally hosted deployment without appropriate institutional review, access
+controls, and safeguards.
+
+## Remove NodeSafari from Docker
+
+Stop and remove the container:
+
+```bash
+docker compose down
+```
+
+Optionally remove the locally built image:
+
+```bash
+docker image rm nodesafari:latest
+```
+
+The downloaded project folder can then be deleted normally. Removing NodeSafari
+does not uninstall Docker Desktop.
