@@ -5,8 +5,8 @@ type: software
 authors:
   - family-names: Kline
     given-names: Adrienne
-version: 0.1.0
-date-released: 2026-09-12
+version: 1.0.0
+date-released: 2026-09-13
 license: MIT
 repository-code: https://github.com/adriennekline/nodesafari
 keywords:

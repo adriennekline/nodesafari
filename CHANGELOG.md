@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.0.0 — 2026-09-13
+
+- Added a complete upload-to-QC workflow with downloadable input reports.
+- Added k-core/core–periphery roles, articulation nodes, bridge edges, and expanded network statistics.
+- Added differential community alignment, partition-similarity scores, and differential normalized rich-club curves.
+- Added single-edge deletion and repeated targeted-versus-random robustness analysis.
+- Added cross-validated node prediction, held-out-edge link prediction, and graph classification with validation metrics and feature importance.
+- Reorganized the application into Data & QC, Explore, Compare, Perturb, and ML workspaces.
+- Added synthetic node labels, graph-family demos, downloads throughout the application, and v1.0 method documentation.
+- Expanded automated coverage to 12 tests across input, structure, comparison, perturbation, and ML workflows.
+
 ## 0.1.0 — 2026-09-12
 
 - Added validated weighted edge-list import.

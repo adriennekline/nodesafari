@@ -10,7 +10,16 @@ from nodesafari.analysis import (
     spectral_embedding,
     top_link_predictions,
 )
-from nodesafari.io import GraphInputError, graph_from_edgelist
+from nodesafari.comparison import differential_community_analysis, differential_rich_club
+from nodesafari.io import GraphInputError, graph_from_edgelist, network_qc
+from nodesafari.ml import (
+    demo_graph_dataset,
+    graph_classification,
+    learned_link_prediction,
+    node_prediction,
+)
+from nodesafari.perturbation import edge_perturbation_screen, robustness_curve
+from nodesafari.structure import bridge_analysis, core_periphery_table, network_statistics_table
 
 
 def sample_graph():
@@ -71,3 +80,79 @@ def test_rich_club_curve_has_normalized_columns():
     graph = nx.barabasi_albert_graph(20, 2, seed=1)
     curve = rich_club_curve(graph, randomizations=3, seed=1)
     assert {"degree_threshold", "observed_phi", "null_phi", "normalized_phi"} <= set(curve.columns)
+
+
+def test_network_qc_reports_cleaning_and_connectivity():
+    frame = pd.DataFrame(
+        {
+            "source": ["A", "A", "A", None, "C"],
+            "target": ["B", "B", "A", "C", "D"],
+            "weight": [1, 2, 3, 4, 5],
+        }
+    )
+    report = network_qc(frame)
+    values = report.set_index("check")["value"]
+    assert values["Missing endpoints"] == 1
+    assert values["Self-loops"] == 1
+    assert values["Duplicate edges"] == 1
+    assert values["Connected components"] == 2
+
+
+def test_core_bridge_and_statistics_outputs():
+    graph = sample_graph()
+    cores = core_periphery_table(graph)
+    bridge_nodes, bridge_edges = bridge_analysis(graph)
+    statistics = network_statistics_table(graph)
+    assert set(cores["node"]) == set(graph)
+    assert set(bridge_nodes["node"]) == {"C"}
+    assert {frozenset((row.source, row.target)) for row in bridge_edges.itertuples()} == {
+        frozenset(("C", "D"))
+    }
+    assert "global_efficiency" in set(statistics["metric"])
+
+
+def test_differential_community_and_rich_club_outputs():
+    graph_a = nx.barabasi_albert_graph(20, 2, seed=1)
+    graph_b = graph_a.copy()
+    graph_b.remove_edge(*next(iter(graph_b.edges())))
+    graph_b.add_edge(*next(nx.non_edges(graph_b)))
+    summary, assignments, flows = differential_community_analysis(graph_a, graph_b)
+    rich = differential_rich_club(graph_a, graph_b, randomizations=2)
+    assert summary["common_nodes"] == 20
+    assert len(assignments) == 20
+    assert flows["nodes"].sum() == 20
+    assert {"normalized_phi_a", "normalized_phi_b", "normalized_change"} <= set(rich.columns)
+
+
+def test_edge_screen_and_robustness_outputs():
+    graph = sample_graph()
+    edges = edge_perturbation_screen(graph)
+    bridge = edges[edges["is_bridge"]].iloc[0]
+    assert frozenset((bridge.source, bridge.target)) == frozenset(("C", "D"))
+    robustness = robustness_curve(graph, steps=3, random_repeats=3, seed=1)
+    assert set(robustness["strategy"]) == {"targeted hubs", "random failure"}
+    assert robustness["largest_component_mean"].between(0, 1).all()
+
+
+def test_supervised_ml_workflows_return_cross_validated_outputs():
+    graph = nx.barabasi_albert_graph(24, 2, seed=3)
+    labels = pd.DataFrame(
+        {
+            "node": [str(node) for node in graph],
+            "label": ["high" if node < 12 else "low" for node in graph],
+        }
+    )
+    graph = nx.relabel_nodes(graph, str)
+    node_scores, node_results, node_importance = node_prediction(graph, labels)
+    link_scores, link_results, link_importance = learned_link_prediction(graph, seed=3)
+    graphs, graph_labels = demo_graph_dataset(seed=3)
+    graph_scores, graph_results, graph_importance = graph_classification(graphs, graph_labels)
+
+    assert node_scores["cv_folds"] >= 2
+    assert len(node_results) == 24
+    assert not node_importance.empty
+    assert 0 <= link_scores["roc_auc"] <= 1
+    assert not link_results.empty and not link_importance.empty
+    assert graph_scores["cv_folds"] >= 2
+    assert len(graph_results) == 24
+    assert not graph_importance.empty

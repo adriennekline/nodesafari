@@ -108,15 +108,17 @@ The `.venv` folder is created by the first command. It is intentionally excluded
 
 NodeSafari opens with synthetic control and disease-like interaction networks. No upload is required to explore the five workspaces:
 
-1. **Explore** — network view, modules, and high-interest nodes
-2. **Rich club** — normalized rich-club organization
-3. **Compare** — changes between two networks
-4. **Perturb** — structural effects of single-node deletion
-5. **ML lab** — node embeddings, similar nodes, and candidate missing interactions
+1. **Data & QC** — input validation, cleaning warnings, and connectivity checks
+2. **Explore** — hubs, rich club, communities, k-core position, bridges, and statistics
+3. **Compare** — whole-network, hub, community, and rich-club changes
+4. **Perturb** — node deletion, edge deletion, and robustness curves
+5. **ML** — embeddings plus node, link, and graph-level prediction
 
-Start in **Explore** to inspect the example network and ranked nodes. Then open
-**Compare** to see how the included disease-like network differs from the control
-network. Every displayed table can be downloaded as CSV.
+Start in **Data & QC** to confirm that the example inputs pass validation, then use
+**Explore** to inspect the network and ranked nodes. Open **Compare** to see how the
+included disease-like network differs from the control network. The **ML** workspace
+includes synthetic labels and a generated graph dataset, so its workflows run before
+you upload supervised-learning data. Analysis tables can be downloaded as CSV.
 
 ## Upload your own data
 

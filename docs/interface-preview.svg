@@ -35,7 +35,7 @@
     <g transform="translate(956 154)"><rect width="194" height="82" rx="14" fill="#0d1c2c" stroke="#214255"/><text x="18" y="29" font-size="13" fill="#9eb2c1">Density</text><text x="18" y="61" font-size="27" font-weight="700" fill="#edf6f8">0.139</text></g>
     <g transform="translate(1166 154)"><rect width="194" height="82" rx="14" fill="#0d1c2c" stroke="#214255"/><text x="18" y="29" font-size="13" fill="#9eb2c1">Connected</text><text x="18" y="61" font-size="27" font-weight="700" fill="#edf6f8">100%</text></g>
   </g>
-  <g font-family="Inter,Arial,sans-serif" font-size="14"><rect x="326" y="261" width="88" height="38" rx="9" fill="#15384a"/><text x="346" y="285" fill="#75e5d6">Explore</text><text x="440" y="285" fill="#afc1cf">Rich club</text><text x="530" y="285" fill="#afc1cf">Compare</text><text x="612" y="285" fill="#afc1cf">Perturb</text><text x="691" y="285" fill="#afc1cf">ML lab</text></g>
+  <g font-family="Inter,Arial,sans-serif" font-size="14"><rect x="326" y="261" width="102" height="38" rx="9" fill="#15384a"/><text x="342" y="285" fill="#75e5d6">Data &amp; QC</text><text x="450" y="285" fill="#afc1cf">Explore</text><text x="525" y="285" fill="#afc1cf">Compare</text><text x="607" y="285" fill="#afc1cf">Perturb</text><text x="686" y="285" fill="#afc1cf">ML</text></g>
   <rect x="326" y="322" width="657" height="490" rx="16" fill="#091827" stroke="#18384a"/>
   <text x="351" y="356" font-family="Inter,Arial,sans-serif" font-size="17" font-weight="700" fill="#dcebee">Interaction network</text>
   <g stroke="#5c7488" stroke-opacity=".55" stroke-width="2">

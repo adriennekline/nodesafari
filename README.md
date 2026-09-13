@@ -4,7 +4,7 @@
 
 NodeSafari is an open-source Streamlit application and Python package for researchers who want to explore biological networks without assembling a custom graph-analysis pipeline. Rich-club organization is included, but the expedition goes further: discover structure, compare conditions, simulate perturbations, and use graph-based machine learning to prioritize follow-up questions.
 
-> **Status:** research alpha. Outputs are exploratory and do not establish biological causality.
+> **Status:** v1.0 research release. Outputs are exploratory and do not establish biological causality.
 
 ![NodeSafari interface showing a biological interaction network, analysis metrics, and ranked nodes](docs/interface-preview.svg)
 
@@ -12,12 +12,13 @@ NodeSafari is an open-source Streamlit application and Python package for resear
 
 | Question | NodeSafari workflow |
 |---|---|
-| Which nodes and modules organize the network? | Centrality, communities, connectivity, and network statistics |
+| Is my input ready to analyze? | Quality-control report for endpoints, loops, duplicates, weights, and connectivity |
+| Which nodes and modules organize the network? | Centrality, communities, k-core structure, bridges, and global statistics |
 | Are highly connected nodes unusually interconnected? | Normalized rich-club analysis with degree-preserving null networks |
-| What changes between control and disease? | Whole-network and node-level differential comparison |
-| Which node deletion most disrupts organization? | Transparent perturbation screen based on efficiency and fragmentation |
+| What changes between control and disease? | Differential hubs, communities, and normalized rich-club curves |
+| Which perturbation most disrupts organization? | Node deletion, edge deletion, and targeted-vs-random robustness screens |
 | Which nodes occupy similar network roles? | Spectral node embeddings and nearest-node search |
-| Which interactions may be missing? | Interpretable ensemble link prediction |
+| Can labels or missing interactions be predicted? | Cross-validated node, link, and graph-level random-forest workflows |
 
 ## Easiest way to start: Docker
 
@@ -84,6 +85,13 @@ ATM,CHEK2,2.1
 - Self-loops and rows with missing endpoints are removed.
 - Do not upload identifiable or otherwise restricted data to a public deployment.
 
+Supervised ML inputs use two additional formats:
+
+- **Node prediction:** a CSV with `node` and `label`; optional numeric columns are added as predictors.
+- **Graph classification:** multiple edge-list CSVs plus a CSV with `graph` and `label`. The `graph` value must match the edge-list filename without `.csv`.
+
+The app ships with synthetic node labels and a generated graph-classification dataset so every v1.0 workflow can be explored immediately.
+
 ## Use the analysis package directly
 
 ```python
@@ -104,12 +112,19 @@ NodeSafari deliberately labels its outputs as structural candidates or predictio
 
 The included container can run on a workstation, institutional server, or any Docker-compatible hosting platform. For remote deployment, place it behind your institution's authenticated reverse proxy and TLS termination. The app does not persist uploaded files, but deployment controls must still match the governance requirements for the data being analyzed.
 
-## Roadmap
+## Included in v1.0
+
+- Data upload and network QC
+- Rich club, hubs, communities, k-core structure, bridges, and network statistics
+- Network A/B comparison, differential hubs, communities, and rich-club curves
+- Node and edge deletion screens plus targeted and random robustness analysis
+- Spectral embeddings, cross-validated node prediction, learned link prediction, and graph classification
+
+## Roadmap beyond v1.0
 
 - Statistical testing for differential networks across biological replicates
 - Temporal-network analysis
 - Node metadata and pathway enrichment
-- Supervised node, link, and graph prediction
 - Heterogeneous and multilayer biological graphs
 - Counterfactual analysis with uncertainty estimates
 
