@@ -188,6 +188,18 @@ Method requests and contributions are welcome. Start with [CONTRIBUTING.md](CONT
 
 ## Attribution
 
+```
+@software{kline2026nodesafari,
+  author    = {Kline, Adrienne},
+  title     = {NodeSafari: Interpretable Network Discovery, Comparison, Perturbation, and Graph Machine Learning},
+  year      = {2026},
+  version   = {1.4.0},
+  publisher = {Northwestern University},
+  url       = {https://github.com/adriennekline/nodesafari},
+  license   = {MIT}
+}
+```
+
 Created by **Adrienne Kline** with **Northwestern University**. Licensed under the [MIT License](LICENSE). Citation metadata are provided in [CITATION.cff](CITATION.cff), with a ready-to-copy [BibTeX entry](CITATION.bib).
 
 Interface icons use [Font Awesome Free 5.15.4](docs/THIRD_PARTY_NOTICES.md).
