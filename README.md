@@ -140,6 +140,8 @@ start command.
 ## Refined in v1.2
 
 - Professional analysis workspace with a clearer header and numbered workflow navigation
+- Self-contained Font Awesome icons with accessible hover and keyboard-focus explanations
+- Action-specific hover help for settings, metrics, downloads, and ML model choices
 - Visible input provenance, direction, and weighting context on every screen
 - Downloadable analysis manifest for recording active inputs and run settings
 - Compact sidebar with explicit active-data cards and organized analysis settings
@@ -162,3 +164,5 @@ Method requests and contributions are welcome. Start with [CONTRIBUTING.md](CONT
 ## Attribution
 
 Created by **Adrienne Kline** with **Northwestern University**. Licensed under the [MIT License](LICENSE). Citation metadata are provided in [CITATION.cff](CITATION.cff), with a ready-to-copy [BibTeX entry](CITATION.bib).
+
+Interface icons use [Font Awesome Free 5.15.4](docs/THIRD_PARTY_NOTICES.md).

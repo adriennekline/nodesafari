@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+from base64 import b64encode
 from html import escape
+from importlib.metadata import PackageNotFoundError, distribution
 from pathlib import Path
 
 import altair as alt
@@ -44,10 +46,130 @@ from nodesafari.visualization import network_figure
 ROOT = Path(__file__).parent
 EXAMPLES = ROOT / "examples"
 
+FA_GLYPHS = {
+    "brain": "&#xf5dc;",
+    "chart-line": "&#xf201;",
+    "compass": "&#xf14e;",
+    "database": "&#xf1c0;",
+    "download": "&#xf019;",
+    "exchange": "&#xf362;",
+    "file-csv": "&#xf6dd;",
+    "flask": "&#xf0c3;",
+    "info": "&#xf05a;",
+    "network": "&#xf542;",
+    "shield": "&#xf3ed;",
+    "sliders": "&#xf1de;",
+    "upload": "&#xf093;",
+}
+
+METRIC_HELP = {
+    "Nodes": "Unique entities in the active reference network after input cleaning.",
+    "Interactions": "Unique edges in the active reference network after input cleaning.",
+    "Modules": "Communities detected by greedy modularity optimization.",
+    "Density": "Observed edges divided by the number of possible edges.",
+    "Largest component": "Share of nodes contained in the largest connected component.",
+    "Common nodes": "Nodes present in both the reference and comparison networks.",
+    "Adjusted Rand": "Agreement between community partitions, adjusted for chance; 1 is identical.",
+    "Normalized mutual info": "Shared information between community partitions; 1 is identical.",
+    "Reassigned": "Share of common nodes assigned to a different aligned community.",
+    "Impact": "Combined structural disruption caused by removing the selected node.",
+    "Efficiency Δ": "Change in global efficiency after the selected node is removed.",
+    "Components": "Connected components remaining after the selected node is removed.",
+    "Labeled nodes": "Nodes with labels available for supervised evaluation.",
+    "CV folds": "Number of cross-validation folds used for out-of-fold evaluation.",
+    "Balanced accuracy": "Average recall across classes; 1 is best.",
+    "Macro F1": "Equal-weighted F1 score across classes; 1 is best.",
+    "Training edges": "Observed edges retained for model fitting.",
+    "Held-out edges": "Observed edges hidden from training and used only for evaluation.",
+    "ROC AUC": "Ability to rank held-out edges above absent pairs; 1 is best and 0.5 is chance.",
+    "Average precision": "Precision-recall summary for held-out link recovery; 1 is best.",
+    "Graphs": "Independent labeled networks included in graph-level evaluation.",
+}
+
+METRIC_ICONS = {
+    "Nodes": "network",
+    "Interactions": "exchange",
+    "Modules": "database",
+    "Density": "chart-line",
+    "Largest component": "shield",
+    "Common nodes": "network",
+    "Adjusted Rand": "exchange",
+    "Normalized mutual info": "chart-line",
+    "Reassigned": "exchange",
+    "Impact": "flask",
+    "Efficiency Δ": "chart-line",
+    "Components": "network",
+    "Labeled nodes": "database",
+    "CV folds": "exchange",
+    "Balanced accuracy": "chart-line",
+    "Macro F1": "chart-line",
+    "Training edges": "network",
+    "Held-out edges": "shield",
+    "ROC AUC": "chart-line",
+    "Average precision": "chart-line",
+    "Graphs": "database",
+}
+
+DOWNLOAD_HELP = {
+    "network_a_qc.csv": "Download the complete quality-control report for reference network A.",
+    "network_b_qc.csv": "Download the complete quality-control report for comparison network B.",
+    "nodesafari_analysis_manifest.csv": "Download the active input provenance and analysis settings for reproducibility.",
+    "node_metrics.csv": "Download centrality and structural metrics for every node.",
+    "rich_club_curve.csv": "Download observed, null, and normalized rich-club coefficients by degree threshold.",
+    "communities.csv": "Download the detected community assignment for every node.",
+    "core_periphery.csv": "Download k-core numbers and core-periphery roles for every node.",
+    "articulation_nodes.csv": "Download nodes whose removal increases network fragmentation.",
+    "bridge_edges.csv": "Download edges whose removal increases network fragmentation.",
+    "network_statistics.csv": "Download the whole-network statistics and their interpretations.",
+    "differential_nodes.csv": "Download node-level changes between reference A and comparison B.",
+    "differential_communities.csv": "Download aligned community assignments and reassignment status.",
+    "differential_rich_club.csv": "Download both normalized rich-club curves and their differences.",
+    "node_perturbation_screen.csv": "Download the ranked results of every single-node deletion.",
+    "edge_perturbation_screen.csv": "Download the ranked results of every single-edge deletion.",
+    "robustness_curve.csv": "Download targeted and random removal robustness trajectories.",
+    "node_embeddings.csv": "Download the learned embedding coordinates for every node.",
+    "node_predictions.csv": "Download out-of-fold node predictions and probabilities.",
+    "learned_link_predictions.csv": "Download ranked candidate links and predicted probabilities.",
+    "graph_predictions.csv": "Download out-of-fold graph predictions and probabilities.",
+}
+
+
+@st.cache_resource
+def fontawesome_font_css() -> str:
+    """Embed Font Awesome Free so icons also work in offline Docker sessions."""
+
+    try:
+        package = distribution("fontawesome-free")
+        font_path = Path(
+            package.locate_file(
+                "fontawesome-free/static/fontawesome_free/webfonts/fa-solid-900.woff2"
+            )
+        )
+        encoded = b64encode(font_path.read_bytes()).decode("ascii")
+    except (PackageNotFoundError, OSError):
+        return ""
+    return (
+        "@font-face{font-family:'Font Awesome 5 Free';font-style:normal;font-weight:900;"
+        "font-display:block;src:url(data:font/woff2;base64,"
+        f"{encoded}) format('woff2');}}"
+    )
+
+
+def fa_icon(name: str, tooltip: str, class_name: str = "") -> str:
+    """Return an accessible, hover-explained Font Awesome icon."""
+
+    glyph = FA_GLYPHS[name]
+    return (
+        f'<span class="fa-icon {escape(class_name)}" role="img" tabindex="0" '
+        f'aria-label="{escape(tooltip)}" data-tooltip="{escape(tooltip)}">{glyph}</span>'
+    )
+
+
 st.set_page_config(page_title="NodeSafari · Network Discovery", page_icon="🧭", layout="wide")
 st.markdown(
-    """
-    <style>
+    "<style>"
+    + fontawesome_font_css()
+    + """
     :root {
       --ink:#201a3b; --panel:#ffffff; --purple:#7c3aed; --purple-dark:#5b21b6;
       --teal:#0f9f91; --teal-dark:#0f766e; --muted:#68637d; --line:#e7e2f1;
@@ -73,6 +195,23 @@ st.markdown(
       background:linear-gradient(135deg,#7c3aed,#0f9f91); color:white; font-size:1.25rem;
       box-shadow:0 8px 18px rgba(91,33,182,.18);
     }
+    .fa-icon {
+      position:relative; display:inline-flex; align-items:center; justify-content:center;
+      font-family:"Font Awesome 5 Free"; font-style:normal; font-weight:900;
+      speak:none;
+    }
+    .fa-icon[data-tooltip]::after {
+      content:attr(data-tooltip); position:absolute; z-index:9999; left:50%; bottom:calc(100% + .55rem);
+      transform:translateX(-50%) translateY(3px); width:max-content; max-width:260px;
+      padding:.45rem .6rem; border-radius:8px; background:#241d40; color:#fff;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      font-size:.72rem; font-weight:520; line-height:1.35; letter-spacing:0;
+      box-shadow:0 8px 22px rgba(36,29,64,.2); opacity:0; visibility:hidden;
+      pointer-events:none; transition:opacity .14s ease,transform .14s ease;
+    }
+    .fa-icon[data-tooltip]:hover::after,.fa-icon[data-tooltip]:focus::after {
+      opacity:1; visibility:visible; transform:translateX(-50%) translateY(0);
+    }
     .brand-name { color:#201a3b; font-size:1.08rem; font-weight:760; letter-spacing:-.02em; }
     .brand-version { color:#807a91; font-size:.72rem; font-weight:650; letter-spacing:.08em; text-transform:uppercase; }
     .hero {
@@ -85,6 +224,7 @@ st.markdown(
     .lede { color:#625d76; font-size:1.02rem; max-width:900px; margin:0; line-height:1.55; }
     .workflow { display:flex; flex-wrap:wrap; gap:.42rem; margin-top:.9rem; }
     .workflow span { color:#5d5570; background:#f8f7fc; border:1px solid #e6e0f0; border-radius:999px; padding:.28rem .62rem; font-size:.76rem; font-weight:650; }
+    .workflow .fa-icon { color:#0f9f91; margin-right:.34rem; }
     .workflow span::after { content:"›"; color:#14b8a6; margin-left:.52rem; }
     .workflow span:last-child::after { content:""; margin:0; }
     .context-strip { display:flex; flex-wrap:wrap; align-items:center; gap:.5rem; margin:.15rem 0 1.15rem; }
@@ -99,6 +239,16 @@ st.markdown(
       box-shadow:0 8px 24px rgba(55,35,100,.055),inset 0 3px 0 rgba(45,212,191,.65);
       padding:.88rem 1rem;
       border-radius:14px; min-height:92px;
+    }
+    .metric-fa { position:relative; z-index:2; height:0; top:.78rem; margin-left:calc(100% - 2.15rem); color:#7c3aed; }
+    .metric-fa .fa-icon { width:1.35rem; height:1.35rem; border-radius:7px; background:#f2efff; font-size:.7rem; }
+    [data-testid="stDownloadButton"] button::before {
+      content:"\\f019"; font-family:"Font Awesome 5 Free"; font-weight:900;
+      color:#0f9f91; margin-right:.42rem;
+    }
+    .stTabs [data-baseweb="tab"]::before {
+      content:"\\f14e"; font-family:"Font Awesome 5 Free"; font-weight:900;
+      color:#0f9f91; margin-right:.38rem; font-size:.78rem;
     }
     [data-testid="stMetricLabel"] { color:#68637d; font-weight:600; }
     [data-testid="stMetricValue"] { color:#241d40; letter-spacing:-.035em; }
@@ -139,6 +289,19 @@ def csv_bytes(frame: pd.DataFrame) -> bytes:
     return frame.to_csv(index=False).encode("utf-8")
 
 
+def download_csv_button(label: str, frame: pd.DataFrame, file_name: str) -> None:
+    """Render a consistently explained CSV export control."""
+
+    st.download_button(
+        label,
+        csv_bytes(frame),
+        file_name,
+        "text/csv",
+        help=DOWNLOAD_HELP[file_name],
+        on_click="ignore",
+    )
+
+
 def styled(chart: alt.Chart) -> alt.Chart:
     return (
         chart.configure_axis(gridColor="#e8e3f2", labelColor="#625d76", titleColor="#30294e")
@@ -150,11 +313,27 @@ def styled(chart: alt.Chart) -> alt.Chart:
 def metric_row(values: list[tuple[str, object, str | None]]) -> None:
     columns = st.columns(len(values))
     for column, (label, value, help_text) in zip(columns, values):
-        column.metric(label, value, help=help_text)
+        explanation = help_text or METRIC_HELP.get(label, f"Summary metric: {label}.")
+        icon_name = METRIC_ICONS.get(label, "chart-line")
+        column.markdown(
+            f'<div class="metric-fa">{fa_icon(icon_name, explanation)}</div>',
+            unsafe_allow_html=True,
+        )
+        column.metric(label, value, help=explanation)
 
 
 def section_heading(title: str, description: str, kicker: str | None = None) -> None:
-    kicker_html = f'<div class="section-kicker">{escape(kicker)}</div>' if kicker else ""
+    icons = {
+        "Validate": "shield",
+        "Explore": "compass",
+        "Compare": "exchange",
+        "Perturb": "flask",
+        "Predict": "brain",
+    }
+    kicker_icon = fa_icon(icons.get(kicker or "", "info"), description, "section-fa")
+    kicker_html = (
+        f'<div class="section-kicker">{kicker_icon} {escape(kicker)}</div>' if kicker else ""
+    )
     st.markdown(
         f'{kicker_html}<div class="section-title">{escape(title)}</div>'
         f'<div class="section-description">{escape(description)}</div>',
@@ -164,14 +343,17 @@ def section_heading(title: str, description: str, kicker: str | None = None) -> 
 
 def empty_state(title: str, description: str) -> None:
     st.markdown(
-        f'<div class="empty-state"><strong>{escape(title)}</strong>{escape(description)}</div>',
+        f'<div class="empty-state"><strong>{fa_icon("info", description)} '
+        f"{escape(title)}</strong>{escape(description)}</div>",
         unsafe_allow_html=True,
     )
 
 
 def source_card(label: str, value: str, metadata: str) -> None:
+    icon_name = "database" if metadata == "Demo data" else "upload"
     st.markdown(
-        f'<div class="source-card"><div class="label">{escape(label)}</div>'
+        f'<div class="source-card"><div class="label">{fa_icon(icon_name, metadata)} '
+        f"{escape(label)}</div>"
         f'<div class="value">{escape(value)}</div><div class="meta">{escape(metadata)}</div></div>',
         unsafe_allow_html=True,
     )
@@ -179,18 +361,23 @@ def source_card(label: str, value: str, metadata: str) -> None:
 
 with st.sidebar:
     st.markdown(
-        '<div class="brand-lockup"><div class="brand-mark">⌁</div><div>'
-        '<div class="brand-name">NodeSafari</div><div class="brand-version">Research workspace · v1.2</div>'
+        f'<div class="brand-lockup"><div class="brand-mark">'
+        f"{fa_icon('compass', 'NodeSafari network discovery workspace')}</div><div>"
+        '<div class="brand-name">NodeSafari</div><div class="brand-version">Research workspace · v1.2.1</div>'
         "</div></div>",
         unsafe_allow_html=True,
     )
     st.markdown("### Data workspace")
     st.caption("Bring an edge list, or explore the complete workflow with synthetic examples.")
     uploaded_a = st.file_uploader(
-        "Reference network (A)", type="csv", help="CSV columns: source, target, optional weight"
+        "Reference network (A)",
+        type="csv",
+        help="Upload the reference edge list. Required columns: source and target; weight is optional.",
     )
     uploaded_b = st.file_uploader(
-        "Comparison network (B)", type="csv", help="Optional second network or condition"
+        "Comparison network (B)",
+        type="csv",
+        help="Upload an optional second edge list to enable differential network analyses.",
     )
     primary_is_demo = uploaded_a is None
     comparison_is_demo = uploaded_b is None and primary_is_demo
@@ -207,9 +394,27 @@ with st.sidebar:
         source_card("Active comparison", "Not loaded", "Upload B to enable comparison")
 
     with st.expander("Analysis settings", expanded=False):
-        directed = st.toggle("Directed network", value=False)
-        randomizations = st.slider("Rich-club null networks", 5, 100, 20, step=5)
-        robustness_repeats = st.slider("Random robustness repeats", 10, 100, 30, step=10)
+        directed = st.toggle(
+            "Directed network",
+            value=False,
+            help="Enable when edge direction matters, such as regulatory or flow networks.",
+        )
+        randomizations = st.slider(
+            "Rich-club null networks",
+            5,
+            100,
+            20,
+            step=5,
+            help="Number of degree-preserving randomized networks used to normalize the rich-club curve.",
+        )
+        robustness_repeats = st.slider(
+            "Random robustness repeats",
+            10,
+            100,
+            30,
+            step=10,
+            help="Number of repeated random-failure simulations used to estimate the robustness band.",
+        )
         st.caption("Higher repeat counts improve stability but take longer.")
     with st.expander("CSV format", expanded=False):
         st.code("source,target,weight\nTP53,MDM2,1.0", language="text")
@@ -245,8 +450,17 @@ st.markdown(
     '<div class="hero-title">Turn connected data into testable questions.</div>'
     '<div class="lede">Explore structure, compare networks, simulate perturbations, and '
     "evaluate graph-based predictions in one reproducible workspace.</div>"
-    '<div class="workflow"><span>Validate</span><span>Explore</span><span>Compare</span>'
-    "<span>Perturb</span><span>Predict</span></div></div>",
+    '<div class="workflow">'
+    f"<span>{fa_icon('shield', 'Check required columns, cleaning, and connectivity')}"
+    "Validate</span>"
+    f"<span>{fa_icon('compass', 'Discover hubs, modules, cores, bridges, and rich-club structure')}"
+    "Explore</span>"
+    f"<span>{fa_icon('exchange', 'Compare reference and condition networks')}"
+    "Compare</span>"
+    f"<span>{fa_icon('flask', 'Simulate node and edge removals')}"
+    "Perturb</span>"
+    f"<span>{fa_icon('brain', 'Evaluate embeddings, baseline ML, and neural models')}"
+    "Predict</span></div></div>",
     unsafe_allow_html=True,
 )
 
@@ -299,7 +513,7 @@ with qc_tab:
     with left:
         st.markdown("**Reference network (A)**")
         st.dataframe(qc_a.assign(value=qc_a["value"].astype(str)), hide_index=True, width="stretch")
-        st.download_button("Download A QC report", csv_bytes(qc_a), "network_a_qc.csv", "text/csv")
+        download_csv_button("Download A QC report", qc_a, "network_a_qc.csv")
     with right:
         st.markdown("**Comparison network (B)**")
         if qc_b is None:
@@ -311,9 +525,7 @@ with qc_tab:
             st.dataframe(
                 qc_b.assign(value=qc_b["value"].astype(str)), hide_index=True, width="stretch"
             )
-            st.download_button(
-                "Download B QC report", csv_bytes(qc_b), "network_b_qc.csv", "text/csv"
-            )
+            download_csv_button("Download B QC report", qc_b, "network_b_qc.csv")
     st.markdown(
         '<p class="method-note">Warnings identify analyzable conditions that may change '
         "interpretation. Errors must be corrected before graph construction.</p>",
@@ -321,7 +533,7 @@ with qc_tab:
     )
     manifest = pd.DataFrame(
         [
-            {"setting": "NodeSafari version", "value": "1.2.0"},
+            {"setting": "NodeSafari version", "value": "1.2.1"},
             {"setting": "Reference source", "value": primary_source_name},
             {"setting": "Comparison source", "value": comparison_source_name},
             {"setting": "Graph type", "value": "directed" if directed else "undirected"},
@@ -338,11 +550,8 @@ with qc_tab:
     with st.expander("Analysis manifest", expanded=False):
         st.caption("Save the active inputs and settings alongside exported results.")
         st.dataframe(manifest, hide_index=True, width="stretch")
-        st.download_button(
-            "Download analysis manifest",
-            csv_bytes(manifest),
-            "nodesafari_analysis_manifest.csv",
-            "text/csv",
+        download_csv_button(
+            "Download analysis manifest", manifest, "nodesafari_analysis_manifest.csv"
         )
 
 with explore_tab:
@@ -369,9 +578,7 @@ with explore_tab:
                 "Centrality is a structural signal, not evidence of causality.</div>",
                 unsafe_allow_html=True,
             )
-            st.download_button(
-                "Download node metrics", csv_bytes(metrics), "node_metrics.csv", "text/csv"
-            )
+            download_csv_button("Download node metrics", metrics, "node_metrics.csv")
 
     with rich_subtab:
         section_heading(
@@ -413,9 +620,7 @@ with explore_tab:
             "produce unstable normalized estimates.</p>",
             unsafe_allow_html=True,
         )
-        st.download_button(
-            "Download rich-club curve", csv_bytes(curve), "rich_club_curve.csv", "text/csv"
-        )
+        download_csv_button("Download rich-club curve", curve, "rich_club_curve.csv")
 
     with community_subtab:
         section_heading(
@@ -439,9 +644,7 @@ with explore_tab:
             st.altair_chart(styled(community_chart), width="stretch")
         with right:
             st.dataframe(communities, hide_index=True, width="stretch", height=320)
-            st.download_button(
-                "Download communities", csv_bytes(communities), "communities.csv", "text/csv"
-            )
+            download_csv_button("Download communities", communities, "communities.csv")
         st.markdown(
             '<p class="method-note">Communities use greedy modularity optimization and '
             "should be interpreted alongside relevant domain annotation.</p>",
@@ -460,9 +663,7 @@ with explore_tab:
         with left:
             st.markdown("**Core–periphery position**")
             st.dataframe(cores, hide_index=True, width="stretch", height=380)
-            st.download_button(
-                "Download core positions", csv_bytes(cores), "core_periphery.csv", "text/csv"
-            )
+            download_csv_button("Download core positions", cores, "core_periphery.csv")
         with right:
             st.markdown("**Articulation nodes**")
             if bridge_nodes.empty:
@@ -474,15 +675,8 @@ with explore_tab:
                 st.success("No bridge edges were found.")
             else:
                 st.dataframe(bridge_edges, hide_index=True, width="stretch", height=170)
-            st.download_button(
-                "Download bridge nodes",
-                csv_bytes(bridge_nodes),
-                "articulation_nodes.csv",
-                "text/csv",
-            )
-            st.download_button(
-                "Download bridge edges", csv_bytes(bridge_edges), "bridge_edges.csv", "text/csv"
-            )
+            download_csv_button("Download bridge nodes", bridge_nodes, "articulation_nodes.csv")
+            download_csv_button("Download bridge edges", bridge_edges, "bridge_edges.csv")
         st.markdown(
             '<p class="method-note">Core position uses k-core decomposition. Bridges and '
             "articulation nodes are exact disconnection points in the undirected projection.</p>",
@@ -497,12 +691,7 @@ with explore_tab:
             "Explore",
         )
         st.dataframe(statistics, hide_index=True, width="stretch")
-        st.download_button(
-            "Download network statistics",
-            csv_bytes(statistics),
-            "network_statistics.csv",
-            "text/csv",
-        )
+        download_csv_button("Download network statistics", statistics, "network_statistics.csv")
 
 with compare_tab:
     if graph_b is None:
@@ -549,11 +738,8 @@ with compare_tab:
                     .properties(height=390)
                 )
                 st.altair_chart(styled(shift_chart), width="stretch")
-            st.download_button(
-                "Download differential nodes",
-                csv_bytes(node_comparison),
-                "differential_nodes.csv",
-                "text/csv",
+            download_csv_button(
+                "Download differential nodes", node_comparison, "differential_nodes.csv"
             )
 
         with community_compare_subtab:
@@ -592,11 +778,10 @@ with compare_tab:
             with right:
                 st.markdown("**Community flows**")
                 st.dataframe(community_flows, hide_index=True, width="stretch", height=360)
-            st.download_button(
+            download_csv_button(
                 "Download differential communities",
-                csv_bytes(node_assignments),
+                node_assignments,
                 "differential_communities.csv",
-                "text/csv",
             )
             st.markdown(
                 '<p class="method-note">B communities are aligned to A by maximal node overlap '
@@ -642,11 +827,10 @@ with compare_tab:
                 )
                 st.altair_chart(styled(rich_chart), width="stretch")
             st.dataframe(rich_difference, hide_index=True, width="stretch", height=260)
-            st.download_button(
+            download_csv_button(
                 "Download differential rich club",
-                csv_bytes(rich_difference),
+                rich_difference,
                 "differential_rich_club.csv",
-                "text/csv",
             )
 
 with perturb_tab:
@@ -675,7 +859,11 @@ with perturb_tab:
             )
             st.altair_chart(styled(perturb_chart), width="stretch")
         with right:
-            selected_node = st.selectbox("Inspect a node deletion", perturbations["node"])
+            selected_node = st.selectbox(
+                "Inspect a node deletion",
+                perturbations["node"],
+                help="Select a node to inspect its simulated structural impact in detail.",
+            )
             selected_result = perturbations.loc[perturbations["node"] == selected_node].iloc[0]
             metric_row(
                 [
@@ -685,12 +873,7 @@ with perturb_tab:
                 ]
             )
             st.dataframe(perturbations, hide_index=True, width="stretch", height=310)
-        st.download_button(
-            "Download node screen",
-            csv_bytes(perturbations),
-            "node_perturbation_screen.csv",
-            "text/csv",
-        )
+        download_csv_button("Download node screen", perturbations, "node_perturbation_screen.csv")
 
     with edge_perturb_subtab:
         edge_perturbations = edge_perturbation_screen(graph_a)
@@ -700,11 +883,8 @@ with perturb_tab:
             "Perturb",
         )
         st.dataframe(edge_perturbations, hide_index=True, width="stretch", height=430)
-        st.download_button(
-            "Download edge screen",
-            csv_bytes(edge_perturbations),
-            "edge_perturbation_screen.csv",
-            "text/csv",
+        download_csv_button(
+            "Download edge screen", edge_perturbations, "edge_perturbation_screen.csv"
         )
         st.markdown(
             '<p class="method-note">Impact combines global-efficiency loss and loss of the '
@@ -748,9 +928,7 @@ with perturb_tab:
             .properties(height=390)
         )
         st.altair_chart(styled(band + lines), width="stretch")
-        st.download_button(
-            "Download robustness curve", csv_bytes(robustness), "robustness_curve.csv", "text/csv"
-        )
+        download_csv_button("Download robustness curve", robustness, "robustness_curve.csv")
 
 with ml_tab:
     embedding_subtab, node_ml_subtab, link_ml_subtab, graph_ml_subtab = st.tabs(
@@ -783,14 +961,14 @@ with ml_tab:
                 st.altair_chart(styled(scatter), width="stretch")
         with right:
             query_node = st.selectbox(
-                "Find nodes with a similar network role", list(embeddings["node"])
+                "Find nodes with a similar network role",
+                list(embeddings["node"]),
+                help="Select a node to rank other nodes by cosine similarity in embedding space.",
             )
             st.dataframe(
                 nearest_nodes(embeddings, query_node), hide_index=True, width="stretch", height=390
             )
-        st.download_button(
-            "Download embeddings", csv_bytes(embeddings), "node_embeddings.csv", "text/csv"
-        )
+        download_csv_button("Download embeddings", embeddings, "node_embeddings.csv")
 
     with node_ml_subtab:
         section_heading(
@@ -803,6 +981,11 @@ with ml_tab:
             ["Random forest", "Graph neural network"],
             horizontal=True,
             key="node_model",
+            captions=[
+                "Interpretable baseline using engineered node metrics.",
+                "Two-layer GCN learning from topology and available labels.",
+            ],
+            help="Choose the model family. Compare validated scores rather than training loss.",
         )
         node_label_upload = st.file_uploader(
             "Node labels",
@@ -876,11 +1059,8 @@ with ml_tab:
                             .properties(height=350)
                         )
                         st.altair_chart(styled(importance_chart), width="stretch")
-                st.download_button(
-                    "Download node predictions",
-                    csv_bytes(node_results),
-                    "node_predictions.csv",
-                    "text/csv",
+                download_csv_button(
+                    "Download node predictions", node_results, "node_predictions.csv"
                 )
             except MLInputError as error:
                 st.warning(str(error))
@@ -902,6 +1082,11 @@ with ml_tab:
             ["Random forest", "Graph autoencoder"],
             horizontal=True,
             key="link_model",
+            captions=[
+                "Baseline using structural pair features.",
+                "GCN encoder with a dot-product reconstruction decoder.",
+            ],
+            help="Choose a link-ranking model. Both options are evaluated on held-out observed edges.",
         )
         try:
             if link_model == "Graph autoencoder":
@@ -937,11 +1122,10 @@ with ml_tab:
                 else:
                     st.markdown("**Model feature importance**")
                     st.dataframe(link_diagnostic, hide_index=True, width="stretch")
-            st.download_button(
+            download_csv_button(
                 "Download learned link predictions",
-                csv_bytes(link_predictions),
+                link_predictions,
                 "learned_link_predictions.csv",
-                "text/csv",
             )
         except MLInputError as error:
             st.warning(f"{error} Showing the structural ranking instead.")
@@ -963,10 +1147,19 @@ with ml_tab:
             ["Random forest", "Graph neural network"],
             horizontal=True,
             key="graph_model",
+            captions=[
+                "Interpretable baseline using whole-network statistics.",
+                "Two-layer GCN with mean pooling across each graph.",
+            ],
+            help="Choose the graph classifier. Evaluation remains stratified and out of fold.",
         )
         st.caption("Upload multiple edge-list CSVs plus graph labels, or run the topology demo.")
         graph_files = st.file_uploader(
-            "Graph edge lists", type="csv", accept_multiple_files=True, key="graph_files"
+            "Graph edge lists",
+            type="csv",
+            accept_multiple_files=True,
+            key="graph_files",
+            help="Upload two or more independent edge-list CSV files with unique filename stems.",
         )
         graph_labels_file = st.file_uploader(
             "Graph labels", type="csv", help="Columns: graph, label", key="graph_labels"
@@ -1029,11 +1222,8 @@ with ml_tab:
                 else:
                     st.markdown("**Model feature importance**")
                     st.dataframe(graph_diagnostic, hide_index=True, width="stretch", height=340)
-            st.download_button(
-                "Download graph predictions",
-                csv_bytes(graph_results),
-                "graph_predictions.csv",
-                "text/csv",
+            download_csv_button(
+                "Download graph predictions", graph_results, "graph_predictions.csv"
             )
         except (MLInputError, GraphInputError, pd.errors.ParserError) as error:
             st.warning(str(error))
@@ -1046,6 +1236,6 @@ with ml_tab:
 st.divider()
 st.markdown(
     '<div class="app-footer">NodeSafari · Open-source network discovery for research · '
-    "v1.2.0 · Exploratory outputs require domain validation</div>",
+    "v1.2.1 · Exploratory outputs require domain validation</div>",
     unsafe_allow_html=True,
 )

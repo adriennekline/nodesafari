@@ -1,4 +1,5 @@
 altair>=5.4,<7
+fontawesome-free==5.15.4
 matplotlib>=3.8,<4
 networkx>=3.3,<4
 numpy>=1.26,<3

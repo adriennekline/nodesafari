@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nodesafari"
-version = "1.2.0"
+version = "1.2.1"
 description = "Interpretable network discovery, comparison, perturbation, and graph ML."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -23,6 +23,7 @@ classifiers = [
 ]
 dependencies = [
   "altair>=5.4,<7",
+  "fontawesome-free==5.15.4",
   "matplotlib>=3.8,<4",
   "networkx>=3.3,<4",
   "numpy>=1.26,<3",

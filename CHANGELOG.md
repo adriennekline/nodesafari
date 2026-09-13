@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.1 — 2026-09-13
+
+- Added self-contained Font Awesome Free icons to workflow navigation, section headings, metrics, data-source cards, empty states, and download controls.
+- Added accessible hover and keyboard-focus explanations to interface icons.
+- Added native hover help to every download button, analysis setting, summary metric, and ML model selector.
+- Added concise model-choice captions and made downloads non-rerunning actions.
+
 ## 1.2.0 — 2026-09-13
 
 - Reworked the application shell with a clearer visual hierarchy, professional product header, numbered workflow navigation, and consistent section introductions.
