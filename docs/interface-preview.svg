@@ -1,67 +1,84 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1440" height="860" viewBox="0 0 1440 860" role="img" aria-labelledby="title desc">
-  <title id="title">NodeSafari interface preview</title>
-  <desc id="desc">Professional light network-discovery workspace with explicit data provenance, a guided Analysis Navigator, numbered workflow tabs, a network view, and ranked nodes.</desc>
+  <title id="title">NodeSafari Getting Started interface</title>
+  <desc id="desc">A clean white network-discovery workspace with six top-level application tabs and a question-led Analysis Navigator in Getting Started.</desc>
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffffff"/><stop offset=".62" stop-color="#fbfaff"/><stop offset="1" stop-color="#f0fdfa"/></linearGradient>
-    <filter id="shadow"><feDropShadow dx="0" dy="10" stdDeviation="20" flood-color="#372364" flood-opacity=".08"/></filter>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffffff"/><stop offset=".72" stop-color="#fbfaff"/><stop offset="1" stop-color="#f0fdfa"/></linearGradient>
+    <linearGradient id="mark" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7c3aed"/><stop offset="1" stop-color="#0f9f91"/></linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#372364" flood-opacity=".07"/></filter>
   </defs>
   <rect width="1440" height="860" rx="24" fill="url(#bg)"/>
-  <rect x="0" y="0" width="292" height="860" rx="24" fill="#faf9ff"/>
-  <path d="M292 0v860" stroke="#e5def5"/>
-  <circle cx="42" cy="49" r="17" fill="#8b5cf6"/><path d="M34 52c8-20 16 19 24-3M35 43c8 19 15-19 23 1" fill="none" stroke="#99f6e4" stroke-width="2.5" stroke-linecap="round"/>
-  <text x="70" y="48" font-family="Inter,Arial,sans-serif" font-size="20" font-weight="700" fill="#201a3b">NodeSafari</text>
-  <text x="70" y="65" font-family="Inter,Arial,sans-serif" font-size="9" font-weight="700" letter-spacing="1" fill="#807a91">RESEARCH WORKSPACE · V1.4.0</text>
-  <text x="30" y="112" font-family="Inter,Arial,sans-serif" font-size="17" font-weight="700" fill="#30294e">Data workspace</text>
-  <text x="30" y="141" font-family="Inter,Arial,sans-serif" font-size="13" fill="#716b84">Bring an edge list or use the demo.</text>
-  <text x="30" y="184" font-family="Inter,Arial,sans-serif" font-size="13" font-weight="600" fill="#625d76">PRIMARY NETWORK</text>
-  <rect x="30" y="199" width="232" height="68" rx="10" fill="#ffffff" stroke="#cfc5e8" stroke-dasharray="5 4"/>
-  <path d="M139 220v22m-8-13 8-9 8 9" fill="none" stroke="#2dd4bf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="93" y="256" font-family="Inter,Arial,sans-serif" font-size="12" fill="#68637d">Drop CSV or browse</text>
-  <text x="30" y="310" font-family="Inter,Arial,sans-serif" font-size="13" font-weight="600" fill="#625d76">COMPARISON NETWORK</text>
-  <rect x="30" y="325" width="232" height="68" rx="10" fill="#ffffff" stroke="#cfc5e8" stroke-dasharray="5 4"/>
-  <path d="M139 346v22m-8-13 8-9 8 9" fill="none" stroke="#2dd4bf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="93" y="382" font-family="Inter,Arial,sans-serif" font-size="12" fill="#68637d">Drop CSV or browse</text>
-  <rect x="30" y="414" width="232" height="58" rx="10" fill="#ffffff" stroke="#e4deef"/>
-  <text x="44" y="434" font-family="Inter,Arial,sans-serif" font-size="9" font-weight="700" letter-spacing="1" fill="#847d95">ACTIVE REFERENCE</text>
-  <text x="44" y="455" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="700" fill="#30294e">Synthetic reference example</text>
-  <rect x="30" y="484" width="232" height="58" rx="10" fill="#ffffff" stroke="#e4deef"/>
-  <text x="44" y="504" font-family="Inter,Arial,sans-serif" font-size="9" font-weight="700" letter-spacing="1" fill="#847d95">ACTIVE COMPARISON</text>
-  <text x="44" y="525" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="700" fill="#30294e">Synthetic comparison example</text>
-  <rect x="30" y="563" width="232" height="46" rx="10" fill="#ffffff" stroke="#e4deef"/>
-  <text x="46" y="591" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="650" fill="#30294e">Analysis settings</text><path d="M239 581l6 6 6-6" fill="none" stroke="#8b5cf6" stroke-width="1.5"/>
-  <rect x="30" y="620" width="232" height="46" rx="10" fill="#ffffff" stroke="#e4deef"/>
-  <text x="46" y="648" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="650" fill="#30294e">CSV format</text><path d="M239 638l6 6 6-6" fill="none" stroke="#8b5cf6" stroke-width="1.5"/>
-  <rect x="314" y="20" width="1058" height="122" rx="17" fill="#ffffff" stroke="#e7e2f1"/>
-  <text x="338" y="48" font-family="Inter,Arial,sans-serif" font-size="11" font-weight="700" letter-spacing="1.8" fill="#0f9f91">NODESAFARI · INTERPRETABLE NETWORK DISCOVERY</text>
-  <text x="338" y="82" font-family="Inter,Arial,sans-serif" font-size="31" font-weight="750" fill="#201a3b">Turn connected data into testable questions.</text>
-  <text x="338" y="108" font-family="Inter,Arial,sans-serif" font-size="13" fill="#625d76">Explore structure, compare networks, simulate perturbations, and evaluate graph-based predictions.</text>
-  <g font-family="Inter,Arial,sans-serif" font-size="10" font-weight="600"><rect x="338" y="118" width="104" height="19" rx="9" fill="#f5f3ff" stroke="#ddd6fe"/><text x="350" y="131" fill="#6d28d9">A · Synthetic demo</text><rect x="451" y="118" width="104" height="19" rx="9" fill="#f5f3ff" stroke="#ddd6fe"/><text x="463" y="131" fill="#6d28d9">B · Synthetic demo</text><rect x="564" y="118" width="72" height="19" rx="9" fill="#ffffff" stroke="#ded8ea"/><text x="576" y="131" fill="#625d76">Undirected</text><rect x="645" y="118" width="64" height="19" rx="9" fill="#ffffff" stroke="#ded8ea"/><text x="657" y="131" fill="#625d76">Weighted</text></g>
+  <rect width="286" height="860" rx="24" fill="#faf9ff"/>
+  <path d="M286 0v860" stroke="#e5def5"/>
+
+  <rect x="28" y="28" width="38" height="38" rx="12" fill="url(#mark)"/>
+  <path d="M37 50c7-18 14 16 22-3M38 41c7 17 14-16 21 1" fill="none" stroke="#ccfbf1" stroke-width="2.5" stroke-linecap="round"/>
+  <text x="78" y="48" font-family="Inter,Arial,sans-serif" font-size="20" font-weight="750" fill="#201a3b">NodeSafari</text>
+  <text x="78" y="64" font-family="Inter,Arial,sans-serif" font-size="9" font-weight="700" letter-spacing="1" fill="#807a91">RESEARCH WORKSPACE · V1.5.0</text>
+
+  <text x="28" y="112" font-family="Inter,Arial,sans-serif" font-size="17" font-weight="700" fill="#30294e">Data workspace</text>
+  <text x="28" y="135" font-family="Inter,Arial,sans-serif" font-size="12" fill="#716b84">Upload a network or use the demo.</text>
+  <text x="28" y="174" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="650" fill="#625d76">Network A · reference</text>
+  <rect x="28" y="188" width="230" height="62" rx="10" fill="#ffffff" stroke="#cfc5e8" stroke-dasharray="5 4"/>
+  <path d="M134 207v20m-8-12 8-8 8 8" fill="none" stroke="#0f9f91" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="89" y="239" font-family="Inter,Arial,sans-serif" font-size="11" fill="#68637d">Drop CSV or browse</text>
+  <text x="28" y="284" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="650" fill="#625d76">Network B · optional comparison</text>
+  <rect x="28" y="298" width="230" height="62" rx="10" fill="#ffffff" stroke="#cfc5e8" stroke-dasharray="5 4"/>
+  <path d="M134 317v20m-8-12 8-8 8 8" fill="none" stroke="#0f9f91" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="89" y="349" font-family="Inter,Arial,sans-serif" font-size="11" fill="#68637d">Drop CSV or browse</text>
+
+  <rect x="28" y="386" width="230" height="112" rx="11" fill="#ffffff" stroke="#e4deef"/>
+  <text x="43" y="408" font-family="Inter,Arial,sans-serif" font-size="9" font-weight="750" letter-spacing="1" fill="#847d95">ACTIVE DATA</text>
+  <text x="43" y="437" font-family="Inter,Arial,sans-serif" font-size="10" font-weight="800" fill="#0f9f91">A</text><text x="64" y="437" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="650" fill="#30294e">Synthetic reference example</text>
+  <text x="64" y="453" font-family="Inter,Arial,sans-serif" font-size="10" fill="#817a91">Demo data</text>
+  <path d="M43 465h199" stroke="#eeeaf5"/>
+  <text x="43" y="486" font-family="Inter,Arial,sans-serif" font-size="10" font-weight="800" fill="#0f9f91">B</text><text x="64" y="486" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="650" fill="#30294e">Synthetic comparison</text>
+
+  <g font-family="Inter,Arial,sans-serif" font-size="12" font-weight="650" fill="#30294e">
+    <rect x="28" y="522" width="230" height="42" rx="10" fill="#ffffff" stroke="#e4deef"/><text x="43" y="548">Network settings</text><path d="M235 538l6 6 6-6" fill="none" stroke="#8b5cf6" stroke-width="1.5"/>
+    <rect x="28" y="574" width="230" height="42" rx="10" fill="#ffffff" stroke="#e4deef"/><text x="43" y="600">Rich-club settings</text><path d="M235 590l6 6 6-6" fill="none" stroke="#8b5cf6" stroke-width="1.5"/>
+    <rect x="28" y="626" width="230" height="42" rx="10" fill="#ffffff" stroke="#e4deef"/><text x="43" y="652">Perturbation settings</text><path d="M235 642l6 6 6-6" fill="none" stroke="#8b5cf6" stroke-width="1.5"/>
+  </g>
+
+  <rect x="310" y="20" width="1098" height="108" rx="17" fill="#ffffff" stroke="#e7e2f1" filter="url(#shadow)"/>
+  <text x="336" y="47" font-family="Inter,Arial,sans-serif" font-size="10" font-weight="700" letter-spacing="1.8" fill="#0f9f91">NODESAFARI · INTERPRETABLE NETWORK DISCOVERY</text>
+  <text x="336" y="79" font-family="Inter,Arial,sans-serif" font-size="29" font-weight="750" fill="#201a3b">Turn connected data into testable questions.</text>
+  <text x="336" y="105" font-family="Inter,Arial,sans-serif" font-size="13" fill="#625d76">Choose an application to validate, explore, compare, perturb, or predict.</text>
+
+  <text x="316" y="157" font-family="Inter,Arial,sans-serif" font-size="9" font-weight="750" letter-spacing="1.5" fill="#827b93">APPLICATIONS</text>
+  <g font-family="Inter,Arial,sans-serif" font-size="12" font-weight="650">
+    <rect x="310" y="168" width="150" height="42" rx="10" fill="#ede9fe" stroke="#c4b5fd"/><text x="329" y="194" fill="#5b21b6">Getting Started</text>
+    <text x="486" y="194" fill="#625d76">Data &amp; QC</text>
+    <text x="596" y="194" fill="#625d76">Explore</text>
+    <text x="688" y="194" fill="#625d76">Compare</text>
+    <text x="787" y="194" fill="#625d76">Perturb</text>
+    <text x="878" y="194" fill="#625d76">Predict</text>
+  </g>
+  <path d="M310 217h1098" stroke="#e9e4f1"/>
+
+  <text x="316" y="252" font-family="Inter,Arial,sans-serif" font-size="9" font-weight="750" letter-spacing="1.4" fill="#0f9f91">EXPLORE</text>
+  <text x="316" y="281" font-family="Inter,Arial,sans-serif" font-size="22" font-weight="740" fill="#261f42">Start with your question</text>
+  <text x="316" y="306" font-family="Inter,Arial,sans-serif" font-size="13" fill="#716b84">The Analysis Navigator turns your goal and available data into a clear route.</text>
+
   <g font-family="Inter,Arial,sans-serif">
-    <rect x="326" y="154" width="1034" height="82" rx="14" fill="#ffffff" stroke="#ddd6ee"/>
-    <circle cx="353" cy="177" r="12" fill="#7c3aed"/><path d="M353 168l4 8-4 9-4-9z" fill="#99f6e4"/>
-    <text x="374" y="181" font-size="11" font-weight="700" letter-spacing="1.3" fill="#0f9f91">ANALYSIS NAVIGATOR</text>
-    <rect x="344" y="192" width="310" height="30" rx="8" fill="#fbfaff" stroke="#dcd5e9"/><text x="358" y="212" font-size="12" fill="#30294e">What organizes this network?</text><path d="M632 203l5 5 5-5" fill="none" stroke="#8b5cf6" stroke-width="1.5"/>
-    <rect x="665" y="192" width="220" height="30" rx="8" fill="#fbfaff" stroke="#dcd5e9"/><text x="679" y="212" font-size="12" fill="#30294e">One network</text><path d="M863 203l5 5 5-5" fill="none" stroke="#8b5cf6" stroke-width="1.5"/>
-    <text x="911" y="204" font-size="10" font-weight="700" fill="#847d95">RECOMMENDED</text><text x="911" y="221" font-size="13" font-weight="700" fill="#5b21b6">Community detection → Explore</text>
+    <rect x="316" y="330" width="336" height="76" rx="12" fill="#ffffff" stroke="#e4deef"/><circle cx="341" cy="354" r="11" fill="#ede9fe"/><text x="338" y="358" font-size="11" font-weight="750" fill="#6d28d9">1</text><text x="360" y="358" font-size="13" font-weight="700" fill="#30294e">Choose data</text><text x="334" y="385" font-size="11" fill="#716b84">Use the demo or upload network A.</text>
+    <rect x="666" y="330" width="336" height="76" rx="12" fill="#ffffff" stroke="#e4deef"/><circle cx="691" cy="354" r="11" fill="#ede9fe"/><text x="688" y="358" font-size="11" font-weight="750" fill="#6d28d9">2</text><text x="710" y="358" font-size="13" font-weight="700" fill="#30294e">Choose a question</text><text x="684" y="385" font-size="11" fill="#716b84">No algorithm name is required.</text>
+    <rect x="1016" y="330" width="336" height="76" rx="12" fill="#ffffff" stroke="#e4deef"/><circle cx="1041" cy="354" r="11" fill="#ede9fe"/><text x="1038" y="358" font-size="11" font-weight="750" fill="#6d28d9">3</text><text x="1060" y="358" font-size="13" font-weight="700" fill="#30294e">Open the route</text><text x="1034" y="385" font-size="11" fill="#716b84">Follow the recommended application.</text>
   </g>
-  <g font-family="Inter,Arial,sans-serif" font-size="13"><rect x="448" y="261" width="98" height="38" rx="9" fill="#ede9fe" stroke="#c4b5fd"/><text x="338" y="285" fill="#716b84">01  Data &amp; QC</text><text x="461" y="285" fill="#5b21b6">02  Explore</text><text x="558" y="285" fill="#625d76">03  Compare</text><text x="660" y="285" fill="#625d76">04  Perturb</text><text x="753" y="285" fill="#625d76">05  Predict</text></g>
-  <rect x="326" y="322" width="657" height="490" rx="16" fill="#ffffff" stroke="#e2dcf2"/>
-  <text x="351" y="348" font-family="Inter,Arial,sans-serif" font-size="10" font-weight="700" letter-spacing="1.4" fill="#0f9f91">EXPLORE</text>
-  <text x="351" y="373" font-family="Inter,Arial,sans-serif" font-size="18" font-weight="700" fill="#30294e">Network overview</text>
-  <g fill="none" stroke="#968daa" stroke-opacity=".55" stroke-width="2">
-    <path d="M479 452L590 400 684 466 612 563 484 564ZM590 400L776 412 830 512 684 466M612 563L747 650 830 512M484 564L415 659 555 726 747 650M776 412L887 448M830 512L900 594M747 650L847 706M415 659L368 553M479 452L387 426M684 466L720 369M612 563L548 486M590 400L548 486M548 486L484 564"/>
-  </g>
-  <g stroke="#ffffff" stroke-width="2">
-    <g fill="#2dd4bf"><circle cx="479" cy="452" r="18"/><circle cx="590" cy="400" r="23"/><circle cx="684" cy="466" r="25"/><circle cx="612" cy="563" r="27"/><circle cx="484" cy="564" r="20"/></g>
-    <g fill="#8b5cf6"><circle cx="776" cy="412" r="19"/><circle cx="830" cy="512" r="27"/><circle cx="747" cy="650" r="22"/><circle cx="887" cy="448" r="15"/><circle cx="900" cy="594" r="17"/><circle cx="847" cy="706" r="15"/></g>
-    <g fill="#14b8a6"><circle cx="415" cy="659" r="19"/><circle cx="555" cy="726" r="16"/><circle cx="368" cy="553" r="14"/><circle cx="387" cy="426" r="15"/></g>
-    <g fill="#a78bfa"><circle cx="548" cy="486" r="16"/><circle cx="720" cy="369" r="14"/></g>
-  </g>
-  <g font-family="Inter,Arial,sans-serif" font-size="10" text-anchor="middle" fill="#ffffff"><text x="479" y="456">TP53</text><text x="590" y="404">ATM</text><text x="684" y="470">BRCA1</text><text x="612" y="567">CDKN1A</text><text x="830" y="516">STAT3</text><text x="747" y="654">AKT1</text></g>
-  <rect x="1005" y="322" width="355" height="490" rx="16" fill="#ffffff" stroke="#e2dcf2"/>
-  <text x="1031" y="358" font-family="Inter,Arial,sans-serif" font-size="17" font-weight="700" fill="#30294e">High-interest nodes</text>
-  <g font-family="Inter,Arial,sans-serif" font-size="12"><text x="1031" y="397" fill="#716b84">NODE</text><text x="1160" y="397" fill="#716b84">DEGREE</text><text x="1253" y="397" fill="#716b84">PAGERANK</text></g>
-  <g stroke="#e2dcf2"><path d="M1030 413h304M1030 460h304M1030 507h304M1030 554h304M1030 601h304"/></g>
-  <g font-family="Inter,Arial,sans-serif" font-size="14" fill="#30294e"><text x="1031" y="443">STAT3</text><text x="1174" y="443">6</text><text x="1267" y="443">0.071</text><text x="1031" y="490">TP53</text><text x="1174" y="490">5</text><text x="1267" y="490">0.066</text><text x="1031" y="537">AKT1</text><text x="1174" y="537">5</text><text x="1267" y="537">0.065</text><text x="1031" y="584">BRCA1</text><text x="1174" y="584">4</text><text x="1267" y="584">0.056</text></g>
-  <rect x="1030" y="639" width="305" height="104" rx="10" fill="#f0fdfa"/><rect x="1030" y="639" width="3" height="104" fill="#14b8a6"/><text x="1050" y="668" font-family="Inter,Arial,sans-serif" font-size="13" font-weight="700" fill="#30294e">STAT3 is the leading hub.</text><text x="1050" y="694" font-family="Inter,Arial,sans-serif" font-size="12" fill="#625d76">Treat this as a structural candidate</text><text x="1050" y="713" font-family="Inter,Arial,sans-serif" font-size="12" fill="#625d76">for follow-up, not causal evidence.</text>
+
+  <text x="316" y="447" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="650" fill="#625d76">What do you want to learn?</text>
+  <rect x="316" y="460" width="620" height="44" rx="9" fill="#ffffff" stroke="#cfc5e8"/><text x="334" y="487" font-family="Inter,Arial,sans-serif" font-size="13" fill="#30294e">What organizes this network?</text><path d="M906 477l6 6 6-6" fill="none" stroke="#8b5cf6" stroke-width="1.5"/>
+  <text x="960" y="447" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="650" fill="#625d76">What data do you have?</text>
+  <rect x="960" y="460" width="392" height="44" rx="9" fill="#ffffff" stroke="#cfc5e8"/><text x="978" y="487" font-family="Inter,Arial,sans-serif" font-size="13" fill="#30294e">One network</text><path d="M1322 477l6 6 6-6" fill="none" stroke="#8b5cf6" stroke-width="1.5"/>
+
+  <rect x="316" y="530" width="1036" height="224" rx="15" fill="#ffffff" stroke="#ddd6ee" filter="url(#shadow)"/>
+  <rect x="338" y="552" width="36" height="36" rx="10" fill="url(#mark)"/><path d="M347 573c7-18 14 16 20-3" fill="none" stroke="#ccfbf1" stroke-width="2" stroke-linecap="round"/>
+  <text x="392" y="567" font-family="Inter,Arial,sans-serif" font-size="17" font-weight="740" fill="#261f42">Map network structure</text>
+  <text x="392" y="588" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="700" fill="#0f766e">Primary method · Community detection</text>
+  <text x="338" y="629" font-family="Inter,Arial,sans-serif" font-size="10" font-weight="750" letter-spacing="1.1" fill="#827b93">WHY THIS FITS</text>
+  <text x="338" y="650" font-family="Inter,Arial,sans-serif" font-size="12" fill="#625d76">Find modules and central connectors without assuming labels.</text>
+  <text x="785" y="629" font-family="Inter,Arial,sans-serif" font-size="10" font-weight="750" letter-spacing="1.1" fill="#827b93">SUPPORTING METHODS</text>
+  <text x="785" y="650" font-family="Inter,Arial,sans-serif" font-size="12" fill="#625d76">Hubs, k-core structure, bridges, and statistics</text>
+  <rect x="338" y="681" width="992" height="43" rx="9" fill="#f2efff" stroke="#ddd6fe"/>
+  <text x="357" y="707" font-family="Inter,Arial,sans-serif" font-size="13" font-weight="680" fill="#5b21b6">Recommended route · Explore → Overview &amp; hubs, Communities, Core &amp; bridges</text>
+  <text x="316" y="797" font-family="Inter,Arial,sans-serif" font-size="11" fill="#827b93">Active-data summary appears below the recommendation; analysis results stay inside their application tabs.</text>
 </svg>

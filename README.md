@@ -4,7 +4,7 @@
 
 NodeSafari is an open-source Streamlit application and Python package for researchers who want to explore networks without assembling a custom graph-analysis pipeline. Rich-club organization is included, but the expedition goes further: discover structure, compare conditions, simulate perturbations, and use graph-based machine learning to prioritize follow-up questions. Biological interaction networks are the included example, not a restriction on the software.
 
-> **Status:** v1.4 research release. Outputs are exploratory and do not establish causality.
+> **Status:** v1.5 research release. Outputs are exploratory and do not establish causality.
 
 ![NodeSafari interface showing the Analysis Navigator, an interaction network, and ranked nodes](docs/interface-preview.svg)
 
@@ -32,8 +32,9 @@ recommends:
 - The exact NodeSafari workspace path
 - A method-specific limitation or validation caveat
 
-The recommended top-level workspace opens automatically. All other analyses remain
-available, and the navigator also lists other questions supported by the selected
+The navigator lives in the dedicated **Getting Started** application. It keeps the
+recommendation and data-readiness guidance in one place, while the analysis tabs
+remain focused on results. It also lists other questions supported by the selected
 data profile.
 
 ## Easiest way to start: Docker
@@ -174,6 +175,14 @@ start command.
 - Threshold-specific rich-club membership plus rich-club, feeder, and local edge classification
 - Role-colored network visualization and downloadable membership, edge-role, Methods, settings, and SVG files
 
+## Simplified in v1.5
+
+- Added six clear top-level application tabs: Getting Started, Data & QC, Explore, Compare, Perturb, and Predict
+- Moved the complete Analysis Navigator, data-readiness guidance, and network summary into Getting Started
+- Shortened the persistent header and removed duplicate workflow and metric elements from analysis screens
+- Consolidated active data into one compact sidebar card and separated advanced settings by analysis type
+- Replaced numbered navigation labels with direct, task-oriented application names
+
 ## Roadmap beyond v1.0
 
 - Statistical testing for differential networks across replicated observations
@@ -188,12 +197,12 @@ Method requests and contributions are welcome. Start with [CONTRIBUTING.md](CONT
 
 ## Attribution
 
-```
+```bibtex
 @software{kline2026nodesafari,
   author    = {Kline, Adrienne},
   title     = {NodeSafari: Interpretable Network Discovery, Comparison, Perturbation, and Graph Machine Learning},
   year      = {2026},
-  version   = {1.4.0},
+  version   = {1.5.0},
   publisher = {Northwestern University},
   url       = {https://github.com/adriennekline/nodesafari},
   license   = {MIT}
