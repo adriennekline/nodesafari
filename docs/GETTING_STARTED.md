@@ -106,16 +106,17 @@ The `.venv` folder is created by the first command. It is intentionally excluded
 
 ## Try the example networks
 
-NodeSafari opens with synthetic control and disease-like interaction networks. No upload is required to explore the five workspaces:
+NodeSafari opens with synthetic control and disease-like interaction networks. No upload is required to explore the six application tabs:
 
-1. **Data & QC** — input validation, cleaning warnings, and connectivity checks
-2. **Explore** — hubs, rich club, communities, k-core position, bridges, and statistics
-3. **Compare** — whole-network, hub, community, and rich-club changes
-4. **Perturb** — node deletion, edge deletion, and robustness curves
-5. **Predict** — embeddings plus random-forest and graph-neural-network prediction
+1. **Getting Started** — question-led Analysis Navigator, data-readiness guidance, and active-network summary
+2. **Data & QC** — input validation, cleaning warnings, and connectivity checks
+3. **Explore** — hubs, rich club, communities, k-core position, bridges, and statistics
+4. **Compare** — whole-network, hub, community, and rich-club changes
+5. **Perturb** — node deletion, edge deletion, and robustness curves
+6. **Predict** — embeddings plus random-forest and graph-neural-network prediction
 
-If you are unsure where to begin, open the **Analysis Navigator**, choose the question
-closest to yours, and select the kind of data you have. NodeSafari recommends the
+Begin in **Getting Started**, choose the question closest to yours, and select the
+kind of data you have. The Analysis Navigator recommends the
 primary method, supporting checks, required inputs, and workspace path. Otherwise,
 start in **Data & QC** to confirm that the example inputs pass validation, then use
 **Explore** to inspect the network and ranked nodes. Open **Compare** to see how the

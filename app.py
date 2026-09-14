@@ -183,7 +183,7 @@ NAVIGATOR_GOALS = {
         "why": "Use complementary structural views to find modules, central nodes, and connectors without assuming labels.",
         "requires": {"network"},
         "needs": "One edge-list network",
-        "workspace": "02  Explore",
+        "workspace": "Explore",
         "path": "Explore → Overview & hubs, Communities, Core & bridges",
         "icon": "compass",
         "caveat": "Detected structure is descriptive and should be interpreted with domain knowledge.",
@@ -196,7 +196,7 @@ NAVIGATOR_GOALS = {
         "why": "Compare the observed connectivity among high-degree nodes with degree-preserving null networks.",
         "requires": {"network"},
         "needs": "One sufficiently connected edge-list network",
-        "workspace": "02  Explore",
+        "workspace": "Explore",
         "path": "Explore → Rich club",
         "icon": "network",
         "caveat": "Small or sparse networks can produce unstable normalized coefficients.",
@@ -209,7 +209,7 @@ NAVIGATOR_GOALS = {
         "why": "Separate global reorganization from node-level changes and shifts in modular structure.",
         "requires": {"network", "comparison"},
         "needs": "Two edge-list networks with comparable node identities",
-        "workspace": "03  Compare",
+        "workspace": "Compare",
         "path": "Compare → Network & hubs, Communities, Rich club",
         "icon": "exchange",
         "caveat": "A two-network contrast is descriptive; replicated observations are needed for population-level inference.",
@@ -222,7 +222,7 @@ NAVIGATOR_GOALS = {
         "why": "Rank elements by the structural damage caused by removing them and examine network resilience.",
         "requires": {"network"},
         "needs": "One edge-list network",
-        "workspace": "04  Perturb",
+        "workspace": "Perturb",
         "path": "Perturb → Remove nodes, Remove edges, Robustness",
         "icon": "flask",
         "caveat": "Structural impact does not establish causal or experimental importance.",
@@ -235,7 +235,7 @@ NAVIGATOR_GOALS = {
         "why": "Represent each node by its network context and rank nodes occupying similar structural positions.",
         "requires": {"network"},
         "needs": "One edge-list network",
-        "workspace": "05  Predict",
+        "workspace": "Predict",
         "path": "Predict → Node embeddings",
         "icon": "chart-line",
         "caveat": "Embedding similarity suggests a shared network role, not necessarily shared function.",
@@ -248,7 +248,7 @@ NAVIGATOR_GOALS = {
         "why": "Establish an interpretable baseline, then test whether a GCN adds useful signal from topology.",
         "requires": {"network", "node_labels"},
         "needs": "One network plus a node-and-label CSV with at least two classes",
-        "workspace": "05  Predict",
+        "workspace": "Predict",
         "path": "Predict → Node prediction",
         "icon": "brain",
         "caveat": "Use out-of-fold scores for model comparison and reserve external data for final validation.",
@@ -261,7 +261,7 @@ NAVIGATOR_GOALS = {
         "why": "Evaluate recovery of hidden observed edges before ranking currently absent connections.",
         "requires": {"network"},
         "needs": "One network with enough observed and absent node pairs",
-        "workspace": "05  Predict",
+        "workspace": "Predict",
         "path": "Predict → Link prediction",
         "icon": "network",
         "caveat": "A high score prioritizes validation; it is not evidence that a connection exists.",
@@ -274,7 +274,7 @@ NAVIGATOR_GOALS = {
         "why": "Test whether whole-network structure distinguishes graph-level classes across independent samples.",
         "requires": {"network", "graph_labels"},
         "needs": "Multiple independent edge lists plus graph-level labels with at least two samples per class",
-        "workspace": "05  Predict",
+        "workspace": "Predict",
         "path": "Predict → Graph classification",
         "icon": "brain",
         "caveat": "Independent networks—not nodes from one network—must form the evaluation samples.",
@@ -333,7 +333,7 @@ st.markdown(
     [data-testid="stHeader"] { background:rgba(255,255,255,.82); backdrop-filter:blur(10px); }
     [data-testid="stSidebar"] { background:#faf9ff; border-right:1px solid #e5def5; }
     [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p { line-height:1.45; }
-    .block-container { max-width:1480px; padding-top:2.25rem; padding-bottom:3rem; }
+    .block-container { max-width:1480px; padding-top:1.35rem; padding-bottom:3rem; }
     h1,h2,h3 { letter-spacing:-0.025em; }
     h1 { font-size:2.35rem !important; margin:.15rem 0 .35rem !important; }
     h2 { margin-top:.25rem !important; }
@@ -363,18 +363,14 @@ st.markdown(
     .brand-name { color:#201a3b; font-size:1.08rem; font-weight:760; letter-spacing:-.02em; }
     .brand-version { color:#807a91; font-size:.72rem; font-weight:650; letter-spacing:.08em; text-transform:uppercase; }
     .hero {
-      padding:1.25rem 1.4rem 1.15rem; margin-bottom:1rem; border:1px solid var(--line);
+      padding:1rem 1.25rem .95rem; margin-bottom:.75rem; border:1px solid var(--line);
       border-radius:18px; background:rgba(255,255,255,.9);
       box-shadow:0 16px 42px rgba(54,35,93,.07);
     }
     .eyebrow { color:#0f9f91; font-size:.74rem; font-weight:750; letter-spacing:.16em; text-transform:uppercase; }
-    .hero-title { color:#201a3b; font-size:2.35rem; font-weight:770; letter-spacing:-.045em; line-height:1.05; margin:.3rem 0 .45rem; }
-    .lede { color:#625d76; font-size:1.02rem; max-width:900px; margin:0; line-height:1.55; }
-    .workflow { display:flex; flex-wrap:wrap; gap:.42rem; margin-top:.9rem; }
-    .workflow span { color:#5d5570; background:#f8f7fc; border:1px solid #e6e0f0; border-radius:999px; padding:.28rem .62rem; font-size:.76rem; font-weight:650; }
-    .workflow .fa-icon { color:#0f9f91; margin-right:.34rem; }
-    .workflow span::after { content:"›"; color:#14b8a6; margin-left:.52rem; }
-    .workflow span:last-child::after { content:""; margin:0; }
+    .hero-title { color:#201a3b; font-size:2rem; font-weight:770; letter-spacing:-.045em; line-height:1.08; margin:.22rem 0 .32rem; }
+    .lede { color:#625d76; font-size:.94rem; max-width:900px; margin:0; line-height:1.48; }
+    .workspace-kicker { color:#827b93; font-size:.68rem; font-weight:760; letter-spacing:.14em; text-transform:uppercase; margin:.9rem 0 .3rem; }
     .context-strip { display:flex; flex-wrap:wrap; align-items:center; gap:.5rem; margin:.15rem 0 1.15rem; }
     .context-label { color:#827b93; font-size:.72rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; margin-right:.1rem; }
     .context-chip { color:#4f4762; background:white; border:1px solid #ded8ea; border-radius:999px; padding:.26rem .62rem; font-size:.76rem; }
@@ -395,7 +391,11 @@ st.markdown(
     .navigator-route { color:#5b21b6; background:#f2efff; border:1px solid #ddd6fe; border-radius:9px; padding:.55rem .7rem; margin-top:.8rem; font-size:.79rem; font-weight:680; }
     .navigator-caveat { color:#716b84; font-size:.75rem; line-height:1.42; margin-top:.65rem; }
     .navigator-placeholder { color:#716b84; font-size:.84rem; padding:.75rem .1rem .2rem; }
-    @media (max-width:800px) { .navigator-grid { grid-template-columns:1fr; } }
+    .start-steps { display:grid; grid-template-columns:repeat(3,1fr); gap:.7rem; margin:.2rem 0 1.1rem; }
+    .start-step { border:1px solid #e4deef; border-radius:12px; background:#fff; padding:.8rem .9rem; color:#6b647d; font-size:.78rem; line-height:1.42; }
+    .start-step b { display:block; color:#30294e; font-size:.84rem; margin-bottom:.2rem; }
+    .step-number { display:inline-grid; place-items:center; width:1.4rem; height:1.4rem; border-radius:50%; background:#ede9fe; color:#6d28d9; font-weight:760; margin-right:.35rem; }
+    @media (max-width:800px) { .navigator-grid,.start-steps { grid-template-columns:1fr; } }
     [data-testid="stMetric"] {
       background:linear-gradient(145deg,#ffffff,#fbfaff);
       border:1px solid #e2dcf2;
@@ -421,13 +421,16 @@ st.markdown(
     .insight { border-left:3px solid #14b8a6; background:linear-gradient(90deg,#ecfdf9,#f7f5ff); padding:.85rem 1rem; border-radius:0 12px 12px 0; color:#30294e; line-height:1.5; }
     .empty-state { border:1px dashed #cfc5e8; background:#fbfaff; padding:1.35rem; border-radius:14px; color:#625d76; }
     .empty-state strong { color:#30294e; display:block; margin-bottom:.25rem; }
-    .source-card { border:1px solid #e4deef; background:#ffffff; border-radius:12px; padding:.72rem .8rem; margin:.4rem 0 .9rem; }
+    .source-card { border:1px solid #e4deef; background:#ffffff; border-radius:12px; padding:.72rem .8rem; margin:.45rem 0 .9rem; }
     .source-card .label { color:#847d95; font-size:.68rem; font-weight:750; letter-spacing:.1em; text-transform:uppercase; }
-    .source-card .value { color:#30294e; font-size:.86rem; font-weight:680; margin-top:.16rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .source-card .meta { color:#817a91; font-size:.73rem; margin-top:.12rem; }
+    .source-row { display:grid; grid-template-columns:1.25rem 1fr; gap:.35rem; align-items:start; padding-top:.52rem; }
+    .source-row + .source-row { margin-top:.45rem; border-top:1px solid #eeeaf5; }
+    .source-key { color:#0f9f91; font-size:.72rem; font-weight:800; padding-top:.08rem; }
+    .source-card .value { color:#30294e; font-size:.8rem; font-weight:680; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .source-card .meta { color:#817a91; font-size:.69rem; margin-top:.08rem; }
     .method-note { color:#716b84; font-size:.84rem; }
-    .stTabs [data-baseweb="tab-list"] { gap:.4rem; border-bottom:1px solid #e9e4f1; padding-bottom:.45rem; }
-    .stTabs [data-baseweb="tab"] { background:transparent; border:1px solid transparent; border-radius:10px; padding:.5rem .84rem; color:#6b647d; font-weight:620; }
+    .stTabs [data-baseweb="tab-list"] { gap:.32rem; border-bottom:1px solid #e9e4f1; padding-bottom:.42rem; }
+    .stTabs [data-baseweb="tab"] { background:transparent; border:1px solid transparent; border-radius:10px; padding:.52rem .78rem; color:#6b647d; font-weight:650; }
     .stTabs [aria-selected="true"] { background:linear-gradient(135deg,#ede9fe,#e6fffb); border-color:#c4b5fd; color:#5b21b6; }
     [data-testid="stDataFrame"] { border:1px solid #e7e2f1; border-radius:12px; overflow:hidden; }
     .stButton button,.stDownloadButton button { background:#ffffff; border-color:#8b5cf6; color:#6d28d9; border-radius:9px; font-weight:620; }
@@ -574,7 +577,7 @@ def rich_club_methods_text(
         "the mean null coefficient. Empirical one-sided p-values used a plus-one correction, "
         "and Benjamini-Hochberg q-values were reported descriptively. Thresholds retaining "
         f"fewer than {min_rich_nodes} rich nodes were flagged as unstable and excluded from "
-        "exploratory-signal designation. Analyses were performed with NodeSafari v1.4.0."
+        "exploratory-signal designation. Analyses were performed with NodeSafari v1.5.0."
     )
 
 
@@ -600,6 +603,7 @@ def metric_row(values: list[tuple[str, object, str | None]]) -> None:
 
 def section_heading(title: str, description: str, kicker: str | None = None) -> None:
     icons = {
+        "Getting started": "compass",
         "Validate": "shield",
         "Explore": "compass",
         "Compare": "exchange",
@@ -625,12 +629,23 @@ def empty_state(title: str, description: str) -> None:
     )
 
 
-def source_card(label: str, value: str, metadata: str) -> None:
-    icon_name = "database" if metadata == "Demo data" else "upload"
+def active_data_card(
+    reference: str,
+    reference_metadata: str,
+    comparison: str,
+    comparison_metadata: str,
+) -> None:
+    """Show both active network sources in one compact sidebar card."""
+
     st.markdown(
-        f'<div class="source-card"><div class="label">{fa_icon(icon_name, metadata)} '
-        f"{escape(label)}</div>"
-        f'<div class="value">{escape(value)}</div><div class="meta">{escape(metadata)}</div></div>',
+        f'<div class="source-card"><div class="label">{fa_icon("database", "Active network sources")} '
+        "Active data</div>"
+        '<div class="source-row"><div class="source-key">A</div><div>'
+        f'<div class="value">{escape(reference)}</div>'
+        f'<div class="meta">{escape(reference_metadata)}</div></div></div>'
+        '<div class="source-row"><div class="source-key">B</div><div>'
+        f'<div class="value">{escape(comparison)}</div>'
+        f'<div class="meta">{escape(comparison_metadata)}</div></div></div></div>',
         unsafe_allow_html=True,
     )
 
@@ -653,7 +668,7 @@ def navigator_card(recommendation: dict[str, object]) -> None:
         f"{escape(str(recommendation['needs']))}</div>"
         f'<div class="navigator-item"><b>Recommended order</b>Start with the primary method, '
         "then use the supporting analyses to check whether the result is consistent.</div></div>"
-        f'<div class="navigator-route">Open automatically · '
+        f'<div class="navigator-route">Recommended route · '
         f"{escape(str(recommendation['path']))}</div>"
         f'<div class="navigator-caveat">{fa_icon("info", str(recommendation["caveat"]))} '
         f"{escape(str(recommendation['caveat']))}</div></div>",
@@ -665,42 +680,49 @@ with st.sidebar:
     st.markdown(
         f'<div class="brand-lockup"><div class="brand-mark">'
         f"{fa_icon('compass', 'NodeSafari network discovery workspace')}</div><div>"
-        '<div class="brand-name">NodeSafari</div><div class="brand-version">Research workspace · v1.4.0</div>'
+        '<div class="brand-name">NodeSafari</div><div class="brand-version">Research workspace · v1.5.0</div>'
         "</div></div>",
         unsafe_allow_html=True,
     )
     st.markdown("### Data workspace")
     st.caption("Bring an edge list, or explore the complete workflow with synthetic examples.")
     uploaded_a = st.file_uploader(
-        "Reference network (A)",
+        "Network A · reference",
         type="csv",
         help="Upload the reference edge list. Required columns: source and target; weight is optional.",
     )
     uploaded_b = st.file_uploader(
-        "Comparison network (B)",
+        "Network B · optional comparison",
         type="csv",
         help="Upload an optional second edge list to enable differential network analyses.",
     )
     primary_is_demo = uploaded_a is None
     comparison_is_demo = uploaded_b is None and primary_is_demo
-    source_card(
-        "Active reference",
-        "Synthetic reference example" if primary_is_demo else uploaded_a.name,
-        "Demo data" if primary_is_demo else "Uploaded CSV",
-    )
+    reference_value = "Synthetic reference example" if primary_is_demo else uploaded_a.name
+    reference_metadata = "Demo data" if primary_is_demo else "Uploaded CSV"
     if uploaded_b is not None:
-        source_card("Active comparison", uploaded_b.name, "Uploaded CSV")
+        comparison_value = uploaded_b.name
+        comparison_metadata = "Uploaded CSV"
     elif comparison_is_demo:
-        source_card("Active comparison", "Synthetic comparison example", "Demo data")
+        comparison_value = "Synthetic comparison example"
+        comparison_metadata = "Demo data"
     else:
-        source_card("Active comparison", "Not loaded", "Upload B to enable comparison")
+        comparison_value = "Not loaded"
+        comparison_metadata = "Upload B to enable comparison"
+    active_data_card(
+        reference_value,
+        reference_metadata,
+        comparison_value,
+        comparison_metadata,
+    )
 
-    with st.expander("Analysis settings", expanded=False):
+    with st.expander("Network settings", expanded=False):
         directed = st.toggle(
             "Directed network",
             value=False,
             help="Enable when edge direction matters, such as regulatory or flow networks.",
         )
+    with st.expander("Rich-club settings", expanded=False):
         randomizations = st.select_slider(
             "Rich-club null networks",
             options=[10, 25, 50, 100, 250, 500, 1000],
@@ -738,6 +760,8 @@ with st.sidebar:
             step=1,
             help="Fixed seed used to reproduce the null-network ensemble.",
         )
+        st.caption("Higher null counts improve stability but take longer.")
+    with st.expander("Perturbation settings", expanded=False):
         robustness_repeats = st.slider(
             "Random robustness repeats",
             10,
@@ -746,7 +770,6 @@ with st.sidebar:
             step=10,
             help="Number of repeated random-failure simulations used to estimate the robustness band.",
         )
-        st.caption("Higher null and robustness repeat counts improve stability but take longer.")
     with st.expander("CSV format", expanded=False):
         st.code("source,target,weight\nTP53,MDM2,1.0", language="text")
         st.caption("The weight column is optional. Node IDs can be text or numbers.")
@@ -796,19 +819,8 @@ if rich_weighted:
 st.markdown(
     '<div class="hero"><div class="eyebrow">NodeSafari · interpretable network discovery</div>'
     '<div class="hero-title">Turn connected data into testable questions.</div>'
-    '<div class="lede">Explore structure, compare networks, simulate perturbations, and '
-    "evaluate graph-based predictions in one reproducible workspace.</div>"
-    '<div class="workflow">'
-    f"<span>{fa_icon('shield', 'Check required columns, cleaning, and connectivity')}"
-    "Validate</span>"
-    f"<span>{fa_icon('compass', 'Discover hubs, modules, cores, bridges, and rich-club structure')}"
-    "Explore</span>"
-    f"<span>{fa_icon('exchange', 'Compare reference and condition networks')}"
-    "Compare</span>"
-    f"<span>{fa_icon('flask', 'Simulate node and edge removals')}"
-    "Perturb</span>"
-    f"<span>{fa_icon('brain', 'Evaluate embeddings, baseline ML, and neural models')}"
-    "Predict</span></div></div>",
+    '<div class="lede">Choose a workspace below to validate data, discover structure, '
+    "compare conditions, test perturbations, or evaluate predictions.</div></div>",
     unsafe_allow_html=True,
 )
 
@@ -824,21 +836,31 @@ primary_source = escape(primary_source_name)
 comparison_source = escape(comparison_source_name)
 primary_class = "demo" if primary_is_demo else "upload"
 comparison_class = "demo" if comparison_is_demo else "upload" if uploaded_b else ""
-st.markdown(
-    '<div class="context-strip"><span class="context-label">Active analysis</span>'
-    f'<span class="context-chip {primary_class}"><strong>A</strong> · {primary_source}</span>'
-    f'<span class="context-chip {comparison_class}"><strong>B</strong> · {comparison_source}</span>'
-    f'<span class="context-chip">{"Directed" if directed else "Undirected"}</span>'
-    f'<span class="context-chip">{"Weighted" if "weight" in edges_a.columns else "Unweighted"}</span>'
-    "</div>",
-    unsafe_allow_html=True,
+summary = network_summary(graph_a)
+communities = community_table(graph_a)
+metrics = node_metrics(graph_a)
+
+st.markdown('<div class="workspace-kicker">Applications</div>', unsafe_allow_html=True)
+getting_started_tab, qc_tab, explore_tab, compare_tab, perturb_tab, ml_tab = st.tabs(
+    ["Getting Started", "Data & QC", "Explore", "Compare", "Perturb", "Predict"]
 )
 
-with st.expander("Analysis Navigator — start with your question", expanded=True):
+with getting_started_tab:
     section_heading(
-        "Choose a defensible starting point",
-        "Tell NodeSafari what you want to learn and what data you have. You will receive a primary method, supporting checks, required inputs, and the exact workspace path.",
-        "Explore",
+        "Start with your question",
+        "The Analysis Navigator translates your goal and available data into a recommended method, supporting checks, and a clear workspace route.",
+        "Getting started",
+    )
+    st.markdown(
+        '<div class="start-steps">'
+        '<div class="start-step"><b><span class="step-number">1</span>Choose data</b>'
+        "Use the demo or upload network A in the sidebar. Add network B only for comparison.</div>"
+        '<div class="start-step"><b><span class="step-number">2</span>Choose a question</b>'
+        "Describe what you want to learn; you do not need to know an algorithm name.</div>"
+        '<div class="start-step"><b><span class="step-number">3</span>Open the route</b>'
+        "Use the recommended application tab and supporting analyses to check the result.</div>"
+        "</div>",
+        unsafe_allow_html=True,
     )
     navigator_left, navigator_right = st.columns([1.25, 1], gap="large")
     with navigator_left:
@@ -863,16 +885,14 @@ with st.expander("Analysis Navigator — start with your question", expanded=Tru
             help="Choose the description of your intended dataset, even if you have not uploaded every file yet.",
         )
 
-    recommended_workspace = "01  Data & QC"
     if navigator_goal is None:
         st.markdown(
-            '<div class="navigator-placeholder">Choose a question above. The navigator will '
-            "recommend methods without hiding any of NodeSafari’s other analyses.</div>",
+            '<div class="navigator-placeholder">Choose the question closest to yours to see '
+            "a recommended analysis route. Every application remains available in the tabs above.</div>",
             unsafe_allow_html=True,
         )
     else:
         recommendation = NAVIGATOR_GOALS[navigator_goal]
-        recommended_workspace = str(recommendation["workspace"])
         navigator_card(recommendation)
         capabilities = DATA_PROFILES[navigator_data]["capabilities"]
         missing = set(recommendation["requires"]) - set(capabilities)
@@ -909,24 +929,30 @@ with st.expander("Analysis Navigator — start with your question", expanded=Tru
         with st.popover("Other questions supported by these data"):
             for question in compatible:
                 st.markdown(f"- {question}")
-
-summary = network_summary(graph_a)
-communities = community_table(graph_a)
-metrics = node_metrics(graph_a)
-metric_row(
-    [
-        ("Nodes", f"{summary['nodes']:.0f}", None),
-        ("Interactions", f"{summary['edges']:.0f}", None),
-        ("Modules", f"{communities['community'].nunique():.0f}", None),
-        ("Density", f"{summary['density']:.3f}", None),
-        ("Largest component", f"{summary['largest_component_fraction']:.0%}", None),
-    ]
-)
-
-qc_tab, explore_tab, compare_tab, perturb_tab, ml_tab = st.tabs(
-    ["01  Data & QC", "02  Explore", "03  Compare", "04  Perturb", "05  Predict"],
-    default=recommended_workspace,
-)
+    st.divider()
+    section_heading(
+        "Active data at a glance",
+        "Confirm what is loaded before moving into an analysis application.",
+        "Validate",
+    )
+    st.markdown(
+        '<div class="context-strip"><span class="context-label">Active analysis</span>'
+        f'<span class="context-chip {primary_class}"><strong>A</strong> · {primary_source}</span>'
+        f'<span class="context-chip {comparison_class}"><strong>B</strong> · {comparison_source}</span>'
+        f'<span class="context-chip">{"Directed" if directed else "Undirected"}</span>'
+        f'<span class="context-chip">{"Weighted" if "weight" in edges_a.columns else "Unweighted"}</span>'
+        "</div>",
+        unsafe_allow_html=True,
+    )
+    metric_row(
+        [
+            ("Nodes", f"{summary['nodes']:.0f}", None),
+            ("Interactions", f"{summary['edges']:.0f}", None),
+            ("Modules", f"{communities['community'].nunique():.0f}", None),
+            ("Density", f"{summary['density']:.3f}", None),
+            ("Largest component", f"{summary['largest_component_fraction']:.0%}", None),
+        ]
+    )
 
 with qc_tab:
     section_heading(
@@ -958,7 +984,7 @@ with qc_tab:
     )
     manifest = pd.DataFrame(
         [
-            {"setting": "NodeSafari version", "value": "1.4.0"},
+            {"setting": "NodeSafari version", "value": "1.5.0"},
             {"setting": "Reference source", "value": primary_source_name},
             {"setting": "Comparison source", "value": comparison_source_name},
             {"setting": "Graph type", "value": "directed" if directed else "undirected"},
@@ -1270,7 +1296,7 @@ with explore_tab:
             )
             settings = {
                 "software": "NodeSafari",
-                "version": "1.4.0",
+                "version": "1.5.0",
                 "source": primary_source_name,
                 "directed_input_projected_to_undirected": directed,
                 "analysis": curve.attrs.get("parameters", {}),
@@ -1926,6 +1952,6 @@ with ml_tab:
 st.divider()
 st.markdown(
     '<div class="app-footer">NodeSafari · Open-source network discovery for research · '
-    "v1.4.0 · Exploratory outputs require domain validation</div>",
+    "v1.5.0 · Exploratory outputs require domain validation</div>",
     unsafe_allow_html=True,
 )

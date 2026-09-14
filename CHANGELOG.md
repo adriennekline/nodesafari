@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.5.0 — 2026-09-14
+
+- Reorganized the interface around six top-level application tabs, beginning with Getting Started.
+- Moved the complete Analysis Navigator, data compatibility checks, active-data context, and summary metrics into Getting Started.
+- Simplified the persistent header so analysis results begin closer to the top of each workspace.
+- Consolidated active sources into one sidebar card and separated network, rich-club, and perturbation settings.
+- Replaced numbered navigation labels with direct task-oriented names and updated the onboarding documentation and interface preview.
+
 ## 1.4.0 — 2026-09-13
 
 - Expanded rich-club analysis to match the evidence, interpretation, membership, and reporting workflow established in RichClub Explorer.
